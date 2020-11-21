@@ -11,7 +11,7 @@ bool Server::StaticInit()
 Server::Server()
 {
     GameObjectRegistry::sInstance->RegisterCreationFunction( 'PLYR', FirstFantasyCharacterServer::StaticCreate );
-
+    GameObjectRegistry::sInstance->RegisterCreationFunction( 'ARCH', ArcherCharacterServer::StaticCreate );
 
     InitNetworkManager();
     
@@ -41,15 +41,33 @@ bool Server::InitNetworkManager()
     return NetworkManagerServer::StaticInit( port );
 }
 
+namespace
+{
+    
+    void CreateRandomArcher( int inNumber )
+    {
+        Vector3 minPos( -1000.f, -1000.f, 230.f );
+        Vector3 maxPos( 1000.f, 1000.f, 230.f );
+        MochaObjectPtr go;
+
+        //make a mouse somewhere- where will these come from?
+        for( int i = 0; i < inNumber; ++i )
+        {
+            go = GameObjectRegistry::sInstance->CreateGameObject( 'ARCH' );
+            Vector3 archerLcation = MMOMath::GetRandomVector( minPos, maxPos );
+            go->SetLocation( archerLcation );
+        }
+    }
+}
 
 
 void Server::SetupWorld()
 {
     //spawn some random mice
-//    CreateRandomMice( 10 );
+    CreateRandomArcher( 10 );
     
     //spawn more random mice!
-//    CreateRandomMice( 10 );
+    CreateRandomArcher( 10 );
 }
 
 void Server::Tick()
@@ -88,10 +106,10 @@ void Server::HandleLostClient( ClientProxyPtr inClientProxy )
     int playerId = inClientProxy->GetPlayerId();
 
 
-    shared_ptr<FirstFantasyCharacterServer> cat = GetCatForPlayer( playerId );
-    if( cat )
+    shared_ptr<FirstFantasyCharacterServer> plyr = GetCatForPlayer( playerId );
+    if( plyr )
     {
-        cat->SetDoesWantToDie( true );
+        plyr->SetDoesWantToDie( true );
     }
 }
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E316A29425690105000EBFFC /* ArcherCharacterServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E316A29225690105000EBFFC /* ArcherCharacterServer.cpp */; };
 		E39A0B4525681392003F80FC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B4425681392003F80FC /* main.cpp */; };
 		E39A0B812568146D003F80FC /* SocketAddressFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B4D2568146B003F80FC /* SocketAddressFactory.cpp */; };
 		E39A0B822568146D003F80FC /* UDPSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B4F2568146B003F80FC /* UDPSocket.cpp */; };
@@ -47,6 +48,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E316A29225690105000EBFFC /* ArcherCharacterServer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ArcherCharacterServer.cpp; sourceTree = "<group>"; };
+		E316A29325690105000EBFFC /* ArcherCharacterServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ArcherCharacterServer.h; sourceTree = "<group>"; };
 		E39A0B4125681392003F80FC /* MochaNetServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MochaNetServer; sourceTree = BUILT_PRODUCTS_DIR; };
 		E39A0B4425681392003F80FC /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		E39A0B4C2568146B003F80FC /* GameObjectRegistry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameObjectRegistry.h; sourceTree = "<group>"; };
@@ -186,6 +189,8 @@
 				E39A0BB325681A62003F80FC /* Server.h */,
 				E39A0BBA256823DC003F80FC /* FirstFantasyCharacterServer.cpp */,
 				E39A0BBB256823DC003F80FC /* FirstFantasyCharacterServer.h */,
+				E316A29225690105000EBFFC /* ArcherCharacterServer.cpp */,
+				E316A29325690105000EBFFC /* ArcherCharacterServer.h */,
 			);
 			path = MochaNetServer;
 			sourceTree = "<group>";
@@ -267,6 +272,7 @@
 				E39A0B822568146D003F80FC /* UDPSocket.cpp in Sources */,
 				E39A0BBC256823DC003F80FC /* FirstFantasyCharacterServer.cpp in Sources */,
 				E39A0B982568146D003F80FC /* SocketUtil.cpp in Sources */,
+				E316A29425690105000EBFFC /* ArcherCharacterServer.cpp in Sources */,
 				E39A0B952568146D003F80FC /* NetworkManager.cpp in Sources */,
 				E39A0B8D2568146D003F80FC /* MochaObject.cpp in Sources */,
 				E39A0B842568146D003F80FC /* SocketAddress.cpp in Sources */,

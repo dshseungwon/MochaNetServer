@@ -28,6 +28,6 @@ MochaObjectPtr GameObjectRegistry::CreateGameObject( uint32_t inFourCCName )
     //should the registry depend on the world? this might be a little weird
     //perhaps you should ask the world to spawn things? for now it will be like this
     MMOWorld::sInstance->AddGameObject( gameObject );
-
+    
     return gameObject;
 }
