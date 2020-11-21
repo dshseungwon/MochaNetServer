@@ -8,6 +8,30 @@
 
 /* Begin PBXBuildFile section */
 		E39A0B4525681392003F80FC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B4425681392003F80FC /* main.cpp */; };
+		E39A0B812568146D003F80FC /* SocketAddressFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B4D2568146B003F80FC /* SocketAddressFactory.cpp */; };
+		E39A0B822568146D003F80FC /* UDPSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B4F2568146B003F80FC /* UDPSocket.cpp */; };
+		E39A0B842568146D003F80FC /* SocketAddress.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B532568146B003F80FC /* SocketAddress.cpp */; };
+		E39A0B862568146D003F80FC /* Timing.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B5A2568146C003F80FC /* Timing.cpp */; };
+		E39A0B882568146D003F80FC /* MMOInputState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B5D2568146C003F80FC /* MMOInputState.cpp */; };
+		E39A0B8B2568146D003F80FC /* Move.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B622568146C003F80FC /* Move.cpp */; };
+		E39A0B8C2568146D003F80FC /* MMOWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B642568146C003F80FC /* MMOWorld.cpp */; };
+		E39A0B8D2568146D003F80FC /* MochaObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B662568146C003F80FC /* MochaObject.cpp */; };
+		E39A0B8E2568146D003F80FC /* MMOPeer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B672568146C003F80FC /* MMOPeer.cpp */; };
+		E39A0B902568146D003F80FC /* MemoryBitStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B692568146C003F80FC /* MemoryBitStream.cpp */; };
+		E39A0B912568146D003F80FC /* GameObjectRegistry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B6B2568146C003F80FC /* GameObjectRegistry.cpp */; };
+		E39A0B932568146D003F80FC /* StringUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B702568146D003F80FC /* StringUtils.cpp */; };
+		E39A0B942568146D003F80FC /* MMOPCH.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B732568146D003F80FC /* MMOPCH.cpp */; };
+		E39A0B952568146D003F80FC /* NetworkManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B742568146D003F80FC /* NetworkManager.cpp */; };
+		E39A0B962568146D003F80FC /* MoveList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B792568146D003F80FC /* MoveList.cpp */; };
+		E39A0B972568146D003F80FC /* TCPSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B7B2568146D003F80FC /* TCPSocket.cpp */; };
+		E39A0B982568146D003F80FC /* SocketUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B7D2568146D003F80FC /* SocketUtil.cpp */; };
+		E39A0BA2256817D9003F80FC /* ClientProxy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0BA0256817D9003F80FC /* ClientProxy.cpp */; };
+		E39A0BA62568183F003F80FC /* MochaServerPCH.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0BA42568183F003F80FC /* MochaServerPCH.cpp */; };
+		E39A0BAA25681937003F80FC /* ReplicationManagerServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0BA825681937003F80FC /* ReplicationManagerServer.cpp */; };
+		E39A0BAF256819D5003F80FC /* NetworkManagerServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0BAD256819D5003F80FC /* NetworkManagerServer.cpp */; };
+		E39A0BB425681A62003F80FC /* Server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0BB225681A62003F80FC /* Server.cpp */; };
+		E39A0BBC256823DC003F80FC /* FirstFantasyCharacterServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0BBA256823DC003F80FC /* FirstFantasyCharacterServer.cpp */; };
+		E39A0BC025682C85003F80FC /* MMOMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0BBF25682C85003F80FC /* MMOMath.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +49,58 @@
 /* Begin PBXFileReference section */
 		E39A0B4125681392003F80FC /* MochaNetServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MochaNetServer; sourceTree = BUILT_PRODUCTS_DIR; };
 		E39A0B4425681392003F80FC /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		E39A0B4C2568146B003F80FC /* GameObjectRegistry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameObjectRegistry.h; sourceTree = "<group>"; };
+		E39A0B4D2568146B003F80FC /* SocketAddressFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SocketAddressFactory.cpp; sourceTree = "<group>"; };
+		E39A0B4E2568146B003F80FC /* MMOPeer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMOPeer.h; sourceTree = "<group>"; };
+		E39A0B4F2568146B003F80FC /* UDPSocket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = UDPSocket.cpp; sourceTree = "<group>"; };
+		E39A0B502568146B003F80FC /* Timing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Timing.h; sourceTree = "<group>"; };
+		E39A0B522568146B003F80FC /* SocketUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketUtil.h; sourceTree = "<group>"; };
+		E39A0B532568146B003F80FC /* SocketAddress.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SocketAddress.cpp; sourceTree = "<group>"; };
+		E39A0B542568146B003F80FC /* Move.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Move.h; sourceTree = "<group>"; };
+		E39A0B552568146B003F80FC /* MMOInputState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMOInputState.h; sourceTree = "<group>"; };
+		E39A0B572568146B003F80FC /* UDPSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UDPSocket.h; sourceTree = "<group>"; };
+		E39A0B582568146B003F80FC /* MMOByteSwap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMOByteSwap.h; sourceTree = "<group>"; };
+		E39A0B5A2568146C003F80FC /* Timing.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Timing.cpp; sourceTree = "<group>"; };
+		E39A0B5D2568146C003F80FC /* MMOInputState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MMOInputState.cpp; sourceTree = "<group>"; };
+		E39A0B622568146C003F80FC /* Move.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Move.cpp; sourceTree = "<group>"; };
+		E39A0B642568146C003F80FC /* MMOWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MMOWorld.cpp; sourceTree = "<group>"; };
+		E39A0B652568146C003F80FC /* MMOMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMOMath.h; sourceTree = "<group>"; };
+		E39A0B662568146C003F80FC /* MochaObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MochaObject.cpp; sourceTree = "<group>"; };
+		E39A0B672568146C003F80FC /* MMOPeer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MMOPeer.cpp; sourceTree = "<group>"; };
+		E39A0B692568146C003F80FC /* MemoryBitStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MemoryBitStream.cpp; sourceTree = "<group>"; };
+		E39A0B6A2568146C003F80FC /* WeightedTimeMovingAverage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeightedTimeMovingAverage.h; sourceTree = "<group>"; };
+		E39A0B6B2568146C003F80FC /* GameObjectRegistry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameObjectRegistry.cpp; sourceTree = "<group>"; };
+		E39A0B6C2568146C003F80FC /* MoveList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MoveList.h; sourceTree = "<group>"; };
+		E39A0B6E2568146D003F80FC /* NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkManager.h; sourceTree = "<group>"; };
+		E39A0B6F2568146D003F80FC /* MMOShared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMOShared.h; sourceTree = "<group>"; };
+		E39A0B702568146D003F80FC /* StringUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringUtils.cpp; sourceTree = "<group>"; };
+		E39A0B712568146D003F80FC /* MochaObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MochaObject.h; sourceTree = "<group>"; };
+		E39A0B722568146D003F80FC /* ReplicationCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReplicationCommand.h; sourceTree = "<group>"; };
+		E39A0B732568146D003F80FC /* MMOPCH.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MMOPCH.cpp; sourceTree = "<group>"; };
+		E39A0B742568146D003F80FC /* NetworkManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NetworkManager.cpp; sourceTree = "<group>"; };
+		E39A0B762568146D003F80FC /* MMOPCH.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMOPCH.h; sourceTree = "<group>"; };
+		E39A0B782568146D003F80FC /* TCPSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TCPSocket.h; sourceTree = "<group>"; };
+		E39A0B792568146D003F80FC /* MoveList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MoveList.cpp; sourceTree = "<group>"; };
+		E39A0B7A2568146D003F80FC /* SocketAddressFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketAddressFactory.h; sourceTree = "<group>"; };
+		E39A0B7B2568146D003F80FC /* TCPSocket.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TCPSocket.cpp; sourceTree = "<group>"; };
+		E39A0B7C2568146D003F80FC /* StringUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringUtils.h; sourceTree = "<group>"; };
+		E39A0B7D2568146D003F80FC /* SocketUtil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SocketUtil.cpp; sourceTree = "<group>"; };
+		E39A0B7E2568146D003F80FC /* MMOWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MMOWorld.h; sourceTree = "<group>"; };
+		E39A0B7F2568146D003F80FC /* MemoryBitStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryBitStream.h; sourceTree = "<group>"; };
+		E39A0B802568146D003F80FC /* SocketAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocketAddress.h; sourceTree = "<group>"; };
+		E39A0BA0256817D9003F80FC /* ClientProxy.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ClientProxy.cpp; sourceTree = "<group>"; };
+		E39A0BA1256817D9003F80FC /* ClientProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClientProxy.h; sourceTree = "<group>"; };
+		E39A0BA42568183F003F80FC /* MochaServerPCH.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MochaServerPCH.cpp; sourceTree = "<group>"; };
+		E39A0BA52568183F003F80FC /* MochaServerPCH.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MochaServerPCH.h; sourceTree = "<group>"; };
+		E39A0BA825681937003F80FC /* ReplicationManagerServer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ReplicationManagerServer.cpp; sourceTree = "<group>"; };
+		E39A0BA925681937003F80FC /* ReplicationManagerServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReplicationManagerServer.h; sourceTree = "<group>"; };
+		E39A0BAD256819D5003F80FC /* NetworkManagerServer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = NetworkManagerServer.cpp; sourceTree = "<group>"; };
+		E39A0BAE256819D5003F80FC /* NetworkManagerServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkManagerServer.h; sourceTree = "<group>"; };
+		E39A0BB225681A62003F80FC /* Server.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Server.cpp; sourceTree = "<group>"; };
+		E39A0BB325681A62003F80FC /* Server.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Server.h; sourceTree = "<group>"; };
+		E39A0BBA256823DC003F80FC /* FirstFantasyCharacterServer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FirstFantasyCharacterServer.cpp; sourceTree = "<group>"; };
+		E39A0BBB256823DC003F80FC /* FirstFantasyCharacterServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirstFantasyCharacterServer.h; sourceTree = "<group>"; };
+		E39A0BBF25682C85003F80FC /* MMOMath.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MMOMath.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +134,58 @@
 			isa = PBXGroup;
 			children = (
 				E39A0B4425681392003F80FC /* main.cpp */,
+				E39A0B732568146D003F80FC /* MMOPCH.cpp */,
+				E39A0B762568146D003F80FC /* MMOPCH.h */,
+				E39A0B6F2568146D003F80FC /* MMOShared.h */,
+				E39A0B6B2568146C003F80FC /* GameObjectRegistry.cpp */,
+				E39A0B4C2568146B003F80FC /* GameObjectRegistry.h */,
+				E39A0B692568146C003F80FC /* MemoryBitStream.cpp */,
+				E39A0B7F2568146D003F80FC /* MemoryBitStream.h */,
+				E39A0B582568146B003F80FC /* MMOByteSwap.h */,
+				E39A0BBF25682C85003F80FC /* MMOMath.cpp */,
+				E39A0B652568146C003F80FC /* MMOMath.h */,
+				E39A0B5D2568146C003F80FC /* MMOInputState.cpp */,
+				E39A0B552568146B003F80FC /* MMOInputState.h */,
+				E39A0B672568146C003F80FC /* MMOPeer.cpp */,
+				E39A0B4E2568146B003F80FC /* MMOPeer.h */,
+				E39A0B642568146C003F80FC /* MMOWorld.cpp */,
+				E39A0B7E2568146D003F80FC /* MMOWorld.h */,
+				E39A0B662568146C003F80FC /* MochaObject.cpp */,
+				E39A0B712568146D003F80FC /* MochaObject.h */,
+				E39A0B622568146C003F80FC /* Move.cpp */,
+				E39A0B542568146B003F80FC /* Move.h */,
+				E39A0B792568146D003F80FC /* MoveList.cpp */,
+				E39A0B6C2568146C003F80FC /* MoveList.h */,
+				E39A0B742568146D003F80FC /* NetworkManager.cpp */,
+				E39A0B6E2568146D003F80FC /* NetworkManager.h */,
+				E39A0B722568146D003F80FC /* ReplicationCommand.h */,
+				E39A0B532568146B003F80FC /* SocketAddress.cpp */,
+				E39A0B802568146D003F80FC /* SocketAddress.h */,
+				E39A0B4D2568146B003F80FC /* SocketAddressFactory.cpp */,
+				E39A0B7A2568146D003F80FC /* SocketAddressFactory.h */,
+				E39A0B7D2568146D003F80FC /* SocketUtil.cpp */,
+				E39A0B522568146B003F80FC /* SocketUtil.h */,
+				E39A0B702568146D003F80FC /* StringUtils.cpp */,
+				E39A0B7C2568146D003F80FC /* StringUtils.h */,
+				E39A0B7B2568146D003F80FC /* TCPSocket.cpp */,
+				E39A0B782568146D003F80FC /* TCPSocket.h */,
+				E39A0B5A2568146C003F80FC /* Timing.cpp */,
+				E39A0B502568146B003F80FC /* Timing.h */,
+				E39A0B4F2568146B003F80FC /* UDPSocket.cpp */,
+				E39A0B572568146B003F80FC /* UDPSocket.h */,
+				E39A0B6A2568146C003F80FC /* WeightedTimeMovingAverage.h */,
+				E39A0BA0256817D9003F80FC /* ClientProxy.cpp */,
+				E39A0BA1256817D9003F80FC /* ClientProxy.h */,
+				E39A0BA42568183F003F80FC /* MochaServerPCH.cpp */,
+				E39A0BA52568183F003F80FC /* MochaServerPCH.h */,
+				E39A0BA825681937003F80FC /* ReplicationManagerServer.cpp */,
+				E39A0BA925681937003F80FC /* ReplicationManagerServer.h */,
+				E39A0BAD256819D5003F80FC /* NetworkManagerServer.cpp */,
+				E39A0BAE256819D5003F80FC /* NetworkManagerServer.h */,
+				E39A0BB225681A62003F80FC /* Server.cpp */,
+				E39A0BB325681A62003F80FC /* Server.h */,
+				E39A0BBA256823DC003F80FC /* FirstFantasyCharacterServer.cpp */,
+				E39A0BBB256823DC003F80FC /* FirstFantasyCharacterServer.h */,
 			);
 			path = MochaNetServer;
 			sourceTree = "<group>";
@@ -118,7 +246,31 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E39A0B932568146D003F80FC /* StringUtils.cpp in Sources */,
+				E39A0B8E2568146D003F80FC /* MMOPeer.cpp in Sources */,
+				E39A0B8C2568146D003F80FC /* MMOWorld.cpp in Sources */,
+				E39A0BAA25681937003F80FC /* ReplicationManagerServer.cpp in Sources */,
+				E39A0B8B2568146D003F80FC /* Move.cpp in Sources */,
+				E39A0B812568146D003F80FC /* SocketAddressFactory.cpp in Sources */,
+				E39A0B862568146D003F80FC /* Timing.cpp in Sources */,
+				E39A0BAF256819D5003F80FC /* NetworkManagerServer.cpp in Sources */,
+				E39A0BA62568183F003F80FC /* MochaServerPCH.cpp in Sources */,
+				E39A0BB425681A62003F80FC /* Server.cpp in Sources */,
+				E39A0B912568146D003F80FC /* GameObjectRegistry.cpp in Sources */,
+				E39A0BC025682C85003F80FC /* MMOMath.cpp in Sources */,
+				E39A0B942568146D003F80FC /* MMOPCH.cpp in Sources */,
+				E39A0B902568146D003F80FC /* MemoryBitStream.cpp in Sources */,
+				E39A0B882568146D003F80FC /* MMOInputState.cpp in Sources */,
 				E39A0B4525681392003F80FC /* main.cpp in Sources */,
+				E39A0B962568146D003F80FC /* MoveList.cpp in Sources */,
+				E39A0BA2256817D9003F80FC /* ClientProxy.cpp in Sources */,
+				E39A0B822568146D003F80FC /* UDPSocket.cpp in Sources */,
+				E39A0BBC256823DC003F80FC /* FirstFantasyCharacterServer.cpp in Sources */,
+				E39A0B982568146D003F80FC /* SocketUtil.cpp in Sources */,
+				E39A0B952568146D003F80FC /* NetworkManager.cpp in Sources */,
+				E39A0B8D2568146D003F80FC /* MochaObject.cpp in Sources */,
+				E39A0B842568146D003F80FC /* SocketAddress.cpp in Sources */,
+				E39A0B972568146D003F80FC /* TCPSocket.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
