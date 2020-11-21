@@ -18,7 +18,7 @@ public:
             void            UnregisterGameObject( IMochaObject* inGameObject );
             void            SetStateDirty( int inNetworkId, uint32_t inDirtyState );
 
-            void            RespawnCats();
+            void            RespawnPlayers();
 
             ClientProxyPtr    GetClientProxy( int inPlayerId ) const;
 

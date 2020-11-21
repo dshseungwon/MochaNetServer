@@ -115,13 +115,13 @@ void NetworkManagerServer::SendWelcomePacket( ClientProxyPtr inClientProxy )
     SendPacket( welcomePacket, inClientProxy->GetSocketAddress() );
 }
 
-void NetworkManagerServer::RespawnCats()
+void NetworkManagerServer::RespawnPlayers()
 {
     for( auto it = mAddressToClientMap.begin(), end = mAddressToClientMap.end(); it != end; ++it )
     {
         ClientProxyPtr clientProxy = it->second;
     
-        clientProxy->RespawnCatIfNecessary();
+        clientProxy->RespawnPlayerIfNecessary();
     }
 }
 

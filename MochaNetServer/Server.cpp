@@ -1,9 +1,6 @@
 #include "MochaServerPCH.h"
 
 
-
-//uncomment this when you begin working on the server
-
 bool Server::StaticInit()
 {
     sInstance.reset( new Server() );
@@ -13,8 +10,7 @@ bool Server::StaticInit()
 
 Server::Server()
 {
-
-    GameObjectRegistry::sInstance->RegisterCreationFunction( 'RCAT', FirstFantasyCharacterServer::StaticCreate );
+    GameObjectRegistry::sInstance->RegisterCreationFunction( 'PLYR', FirstFantasyCharacterServer::StaticCreate );
 
 
     InitNetworkManager();
@@ -62,7 +58,7 @@ void Server::Tick()
 
     NetworkManagerServer::sInstance->CheckForDisconnects();
 
-    NetworkManagerServer::sInstance->RespawnCats();
+    NetworkManagerServer::sInstance->RespawnPlayers();
 
     AMMOPeer::Tick();
 
@@ -72,30 +68,26 @@ void Server::Tick()
 
 void Server::HandleNewClient( ClientProxyPtr inClientProxy )
 {
-    
     int playerId = inClientProxy->GetPlayerId();
     
-    // ScoreBoardManager::sInstance->AddEntry( playerId, inClientProxy->GetName() );
-    SpawnCatForPlayer( playerId );
+    SpawnPlayer( playerId );
 }
 
-void Server::SpawnCatForPlayer( int inPlayerId )
+void Server::SpawnPlayer( int inPlayerId )
 {
-    shared_ptr<FirstFantasyCharacterServer> cat = std::static_pointer_cast< FirstFantasyCharacterServer >( GameObjectRegistry::sInstance->CreateGameObject( 'RCAT' ) );
-    // cat->SetColor( ScoreBoardManager::sInstance->GetEntry( inPlayerId )->GetColor() );
-    cat->SetPlayerId( inPlayerId );
-    //gotta pick a better spawn location than this...
-    cat->SetLocation( Vector3( 1.f - static_cast< float >( inPlayerId ), 0.f, 230.f ) );
+    shared_ptr<FirstFantasyCharacterServer> cat = std::static_pointer_cast< FirstFantasyCharacterServer >( GameObjectRegistry::sInstance->CreateGameObject( 'PLYR' ) );
 
+    cat->SetPlayerId( inPlayerId );
+
+    cat->SetLocation( Vector3( 1.f - static_cast< float >( inPlayerId ), 0.f, 230.f ) );
 }
 
 void Server::HandleLostClient( ClientProxyPtr inClientProxy )
 {
-    //kill client's cat
-    //remove client from scoreboard
+    //Remove client's player
     int playerId = inClientProxy->GetPlayerId();
 
-    // ScoreBoardManager::sInstance->RemoveEntry( playerId );
+
     shared_ptr<FirstFantasyCharacterServer> cat = GetCatForPlayer( playerId );
     if( cat )
     {

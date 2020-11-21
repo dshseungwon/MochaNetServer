@@ -14,7 +14,7 @@ public:
     void HandleLostClient( ClientProxyPtr inClientProxy );
 
     shared_ptr< FirstFantasyCharacterServer >    GetCatForPlayer( int inPlayerId );
-    void    SpawnCatForPlayer( int inPlayerId );
+    void    SpawnPlayer( int inPlayerId );
 
 
 private:

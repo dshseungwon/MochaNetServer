@@ -17,7 +17,7 @@ FirstFantasyCharacterServer::FirstFantasyCharacterServer() :
     mPlayerId( 0 ),
     mIsShooting( false ),
     mHealth( 10 ),
-    kClassId('RCAT')
+    kClassId('PLYR')
 {
     SetCollisionRadius( 0.5f );
 }

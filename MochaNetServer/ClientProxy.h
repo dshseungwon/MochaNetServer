@@ -22,7 +22,7 @@ public:
             bool    IsLastMoveTimestampDirty()                        const        { return mIsLastMoveTimestampDirty; }
 
             void    HandleCatDied();
-            void    RespawnCatIfNecessary();
+            void    RespawnPlayerIfNecessary();
 
 private:
 

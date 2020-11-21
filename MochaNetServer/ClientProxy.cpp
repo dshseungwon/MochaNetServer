@@ -26,11 +26,11 @@ void    ClientProxy::HandleCatDied()
     mTimeToRespawn = Timing::sInstance.GetFrameStartTime() + kRespawnDelay;
 }
 
-void    ClientProxy::RespawnCatIfNecessary()
+void    ClientProxy::RespawnPlayerIfNecessary()
 {
     if( mTimeToRespawn != 0.f && Timing::sInstance.GetFrameStartTime() > mTimeToRespawn )
     {
-        static_cast< Server* > ( AMMOPeer::sInstance.get() )->SpawnCatForPlayer( mPlayerId );
+        static_cast< Server* > ( AMMOPeer::sInstance.get() )->SpawnPlayer( mPlayerId );
         mTimeToRespawn = 0.f;
     }
 }
