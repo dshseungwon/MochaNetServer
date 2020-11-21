@@ -41,6 +41,8 @@ public:
     void SetCatControlType( ECatControlType inCatControlType ) { mCatControlType = inCatControlType; }
 
     void TakeDamage( int inDamagingPlayerId );
+    
+    virtual uint32_t GetClassId() const override { return kClassId; }
 
 protected:
     FirstFantasyCharacterServer();
