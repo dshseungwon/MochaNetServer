@@ -13,7 +13,6 @@ void ArcherCharacterServer::Update()
 
 uint32_t ArcherCharacterServer::Write( OutputMemoryBitStream& inOutputStream, uint32_t inDirtyState ) const
 {
-    LOG ("%s", "WriteArcher");
     uint32_t written_state = 0;
     
     Vector3 location = GetLocation();
