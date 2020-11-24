@@ -5,6 +5,7 @@ NetworkManager::NetworkManager() :
     mDropPacketChance( 0.f ),
     mSimulatedLatency( 0.f )
 {
+    mPool = std::make_shared<ThreadPool>(100);
 }
 
 NetworkManager::~NetworkManager()
@@ -103,18 +104,28 @@ void NetworkManager::ProcessQueuedPackets()
     while( !mPacketQueue.empty() )
     {
         ReceivedPacket& nextPacket = mPacketQueue.front();
-        if( Timing::sInstance.GetTimef() > nextPacket.GetReceivedTime() )
+        
+        if( Timing::sInstance.GetTimef() >= nextPacket.GetReceivedTime() )
         {
-            ProcessPacket( nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
+            LOG("%s", "Packet Received!");
+
+            mPool->EnqueueJob([&](){
+                ProcessPacket( nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
+            });
+
+//            ProcessPacket( nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
+            
             mPacketQueue.pop();
         }
         else
         {
+            LOG("Current Server Time: %f", Timing::sInstance.GetTimef());
+            LOG("Packet Received Time: %f", nextPacket.GetReceivedTime());
             break;
         }
     
     }
-
+//    mPool->Join();
 }
 
 void NetworkManager::SendPacket( const OutputMemoryBitStream& inOutputStream, const SocketAddress& inFromAddress )

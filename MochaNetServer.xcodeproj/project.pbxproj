@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E300F379256D2009005F3836 /* ThreadPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E300F377256D2009005F3836 /* ThreadPool.cpp */; };
 		E316A29425690105000EBFFC /* ArcherCharacterServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E316A29225690105000EBFFC /* ArcherCharacterServer.cpp */; };
 		E39A0B4525681392003F80FC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B4425681392003F80FC /* main.cpp */; };
 		E39A0B812568146D003F80FC /* SocketAddressFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B4D2568146B003F80FC /* SocketAddressFactory.cpp */; };
@@ -48,6 +49,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E300F377256D2009005F3836 /* ThreadPool.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ThreadPool.cpp; sourceTree = "<group>"; };
+		E300F378256D2009005F3836 /* ThreadPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ThreadPool.h; sourceTree = "<group>"; };
 		E316A29225690105000EBFFC /* ArcherCharacterServer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ArcherCharacterServer.cpp; sourceTree = "<group>"; };
 		E316A29325690105000EBFFC /* ArcherCharacterServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ArcherCharacterServer.h; sourceTree = "<group>"; };
 		E39A0B4125681392003F80FC /* MochaNetServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MochaNetServer; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -191,6 +194,8 @@
 				E39A0BBB256823DC003F80FC /* FirstFantasyCharacterServer.h */,
 				E316A29225690105000EBFFC /* ArcherCharacterServer.cpp */,
 				E316A29325690105000EBFFC /* ArcherCharacterServer.h */,
+				E300F377256D2009005F3836 /* ThreadPool.cpp */,
+				E300F378256D2009005F3836 /* ThreadPool.h */,
 			);
 			path = MochaNetServer;
 			sourceTree = "<group>";
@@ -261,6 +266,7 @@
 				E39A0BAF256819D5003F80FC /* NetworkManagerServer.cpp in Sources */,
 				E39A0BA62568183F003F80FC /* MochaServerPCH.cpp in Sources */,
 				E39A0BB425681A62003F80FC /* Server.cpp in Sources */,
+				E300F379256D2009005F3836 /* ThreadPool.cpp in Sources */,
 				E39A0B912568146D003F80FC /* GameObjectRegistry.cpp in Sources */,
 				E39A0BC025682C85003F80FC /* MMOMath.cpp in Sources */,
 				E39A0B942568146D003F80FC /* MMOPCH.cpp in Sources */,
@@ -397,6 +403,7 @@
 		E39A0B4925681392003F80FC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ZUY57PK6P4;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -408,6 +415,7 @@
 		E39A0B4A25681392003F80FC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ZUY57PK6P4;
 				ENABLE_HARDENED_RUNTIME = YES;

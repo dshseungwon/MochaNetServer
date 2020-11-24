@@ -59,6 +59,11 @@ void ReplicationManagerServer::Write( OutputMemoryBitStream& inOutputStream )
                 //add this to the list of replication commands to remove
                 mNetworkIdsToRemove.emplace_back( networkId );
                 break;
+            case RA_RPC:
+                // Do Things for RPC Requests.
+                break;
+            case RA_MAX:
+                break;
             }
 
             //let's pretend everything was written- don't make this too hard

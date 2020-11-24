@@ -73,6 +73,7 @@ private:
     float                        mDropPacketChance;
     float                        mSimulatedLatency;
     
+    std::shared_ptr<ThreadPool>         mPool;
 };
 
     

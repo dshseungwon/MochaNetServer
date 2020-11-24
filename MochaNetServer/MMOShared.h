@@ -27,6 +27,15 @@ const int SOCKET_ERROR = -1;
 #include "unordered_set"
 #include "cassert"
 
+#include <chrono>
+#include <condition_variable>
+#include <cstdio>
+#include <functional>
+#include <future>
+#include <mutex>
+#include <thread>
+
+
 using std::shared_ptr;
 using std::unique_ptr;
 using std::vector;
@@ -52,6 +61,7 @@ class GameObject;
 
 #include "Timing.h"
 #include "WeightedTimeMovingAverage.h"
+#include "ThreadPool.h"
 
 #include "MochaObject.h"
 #include "NetworkManager.h"

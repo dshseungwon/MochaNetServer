@@ -2,7 +2,6 @@
 
 float kDesiredFrameTime = 0.0166f;
 
-#include <chrono>
 using namespace std::chrono;
 
 Timing    Timing::sInstance;
