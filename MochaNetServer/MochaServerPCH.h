@@ -8,5 +8,6 @@
 #include "ArcherCharacterServer.h"
 #include "Server.h"
 
+#include "SQLAPI.h"
 
 
