@@ -149,13 +149,13 @@ void NetworkManagerServer::SendOutgoingPackets()
     }
 }
 
-void NetworkManagerServer::UpdateAllClients()
-{
-    for( auto it = mAddressToClientMap.begin(), end = mAddressToClientMap.end(); it != end; ++it )
-    {
-        SendStatePacketToClient( it->second );
-    }
-}
+//void NetworkManagerServer::UpdateAllClients()
+//{
+//    for( auto it = mAddressToClientMap.begin(), end = mAddressToClientMap.end(); it != end; ++it )
+//    {
+//        SendStatePacketToClient( it->second );
+//    }
+//}
 
 void NetworkManagerServer::SendStatePacketToClient( ClientProxyPtr inClientProxy )
 {

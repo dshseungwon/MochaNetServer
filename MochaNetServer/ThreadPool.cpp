@@ -35,15 +35,15 @@ ThreadPool::~ThreadPool() {
   }
 }
 
-void ThreadPool::Join() {
-    printf("%s","JOIN!!");
-    stop_all = true;
-    cv_job_q_.notify_all();
-    
-    for (auto& t : worker_threads_) {
-      t.join();
-    }
-}
+//void ThreadPool::Join() {
+//    printf("%s","JOIN!!");
+//    stop_all = true;
+//    cv_job_q_.notify_all();
+//
+//    for (auto& t : worker_threads_) {
+//      t.join();
+//    }
+//}
 
 void ThreadPool::EnqueueJob(std::function<void()> job) {
   if (stop_all) {
