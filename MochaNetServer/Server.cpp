@@ -54,7 +54,6 @@ namespace
     void CreateFieldObjectRecord()
     {
         SAConnection con;
-               
         try {
             con.Connect(_TSA("127.0.0.1,5432@sqlapi"), _TSA("postgres"), _TSA("password"), SA_PostgreSQL_Client);
             LOG("%s","Connected to the database.");
@@ -66,7 +65,7 @@ namespace
             cmd.Execute();
 
             con.Disconnect();
-            LOG("%s","Disconnectd from the database.");
+            LOG("%s","Disconnected from the database.");
         }
         catch(SAException &x)
         {
@@ -77,9 +76,8 @@ namespace
 
     void PutRandomArchersToDatabse( int inNumber )
     {
-        Vector3 minPos( -1000.f, -1000.f, 230.f );
-        Vector3 maxPos( 1000.f, 1000.f, 230.f );
-        
+        Vector3 minPos( -3000.f, -3000.f, 230.f );
+        Vector3 maxPos( 3000.f, 3000.f, 230.f );
         
         SAConnection con;
                
@@ -99,7 +97,7 @@ namespace
             }
             
             con.Disconnect();
-            LOG("%s","Disconnectd from the database.");
+            LOG("%s","Disconnected from the database.");
         }
         catch(SAException &x)
         {
@@ -107,22 +105,6 @@ namespace
             printf("%s\n", x.ErrText().GetMultiByteChars());
         }
     }
-
-    void CreateRandomArcher( int inNumber )
-    {
-        Vector3 minPos( -1000.f, -1000.f, 230.f );
-        Vector3 maxPos( 1000.f, 1000.f, 230.f );
-        MochaObjectPtr go;
-
-        //make a mouse somewhere- where will these come from?
-        for( int i = 0; i < inNumber; ++i )
-        {
-            go = GameObjectRegistry::sInstance->CreateGameObject( 'ARCH' );
-            Vector3 archerLcation = MMOMath::GetRandomVector( minPos, maxPos );
-            go->SetLocation( archerLcation );
-        }
-    }
-
     
     void CreateArchersFromDB()
     {
@@ -132,17 +114,18 @@ namespace
             con.Connect(_TSA("127.0.0.1,5432@sqlapi"), _TSA("postgres"), _TSA("password"), SA_PostgreSQL_Client);
             LOG("%s","Connected to the database.");
             
-            SACommand select(&con, _TSA("SELECT type, loc_x, loc_y, loc_z FROM field_objects WHERE type = :1"));
+            SACommand select(&con, _TSA("SELECT id, type, loc_x, loc_y, loc_z FROM field_objects WHERE type = :1"));
             select << _TSA("ARCH");
             select.Execute();
 
             while(select.FetchNext()) {
-                SAString type = select[1].asString();
-                double loc_x = select[2].asDouble();
-                double loc_y = select[3].asDouble();
-                double loc_z = select[4].asDouble();
+                long id = select[1].asLong();
+                SAString type = select[2].asString();
+                double loc_x = select[3].asDouble();
+                double loc_y = select[4].asDouble();
+                double loc_z = select[5].asDouble();
                 
-                LOG("Type: %s Vector(%f, %f, %f) \n", type.GetMultiByteChars(), loc_x, loc_y, loc_z);
+                 printf("[%ld, %s] Location(%f, %f, %f) \n", id, type.GetMultiByteChars(), loc_x, loc_y, loc_z);
                 
                 Vector3 archerLocation;
                 archerLocation.Set(loc_x, loc_y, loc_z);
@@ -152,9 +135,8 @@ namespace
                 go->SetLocation( archerLocation );
             }
             
-            
             con.Disconnect();
-            LOG("%s","Disconnectd from the database.");
+            LOG("%s","Disconnected from the database.");
         }
         catch(SAException &x)
         {
@@ -162,13 +144,32 @@ namespace
             printf("%s\n", x.ErrText().GetMultiByteChars());
         }
     }
-}
+
+//    void CreateRandomArcher( int inNumber )
+//    {
+//        Vector3 minPos( -1000.f, -1000.f, 230.f );
+//        Vector3 maxPos( 1000.f, 1000.f, 230.f );
+//        MochaObjectPtr go;
+//
+//        //make a mouse somewhere- where will these come from?
+//        for( int i = 0; i < inNumber; ++i )
+//        {
+//            go = GameObjectRegistry::sInstance->CreateGameObject( 'ARCH' );
+//            Vector3 archerLcation = MMOMath::GetRandomVector( minPos, maxPos );
+//            go->SetLocation( archerLcation );
+//        }
+//    }
+
+} // End of namespace
 
 
 void Server::SetupWorld()
 {
 //    CreateFieldObjectRecord();
-//    PutRandomArchersToDatabse(30);
+//    PutRandomArchersToDatabse(50);
+    
+    // There exists an error where number of object exceeds certain number,
+    // which occurs at client side.
     
     CreateArchersFromDB();
     

@@ -4,7 +4,9 @@ NetworkManager::NetworkManager() :
     mBytesSentThisFrame( 0 ),
     mDropPacketChance( 0.f ),
     mSimulatedLatency( 0.f ),
-    mCurrentPacketIndex(0)
+    mCurrentPacketIndex(0),
+    bMultiThreading(false),
+    mNumThreads(0)
 {
     // mPacketVector.reserve(10000);
 }
