@@ -46,7 +46,6 @@ void ThreadPool::Join() {
 }
 
 void ThreadPool::EnqueueJob(std::function<void()> job) {
-    printf("%s","EnqueJob!");
   if (stop_all) {
     throw std::runtime_error("ThreadPool 사용 중지됨");
   }

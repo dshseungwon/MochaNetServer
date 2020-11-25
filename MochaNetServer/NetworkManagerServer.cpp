@@ -62,7 +62,7 @@ void NetworkManagerServer::ProcessPacket( ClientProxyPtr inClientProxy, InputMem
         HandleInputPacket( inClientProxy, inInputStream );
         break;
     default:
-        LOG( "Unknown packet type received from %s", inClientProxy->GetSocketAddress().ToString().c_str() );
+        LOG( "Unknown packet type: %d", packetType);
         break;
     }
 }
@@ -99,7 +99,7 @@ void NetworkManagerServer::HandlePacketFromNewClient( InputMemoryBitStream& inIn
     else
     {
         //bad incoming packet from unknown client- we're under attack!!
-        LOG( "Bad incoming packet from unknown client at socket %s", inFromAddress.ToString().c_str() );
+        LOG( "Bad incoming packet: %d", packetType);
     }
 }
 
