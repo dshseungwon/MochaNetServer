@@ -14,7 +14,7 @@ public:
     NetworkManager();
     virtual ~NetworkManager();
 
-    bool    Init( uint16_t inPort );
+    bool    Init( uint16_t inPort, bool useMultiThreading, int numThreads = 4);
     void    ProcessIncomingPackets();
 
     virtual void    ProcessPacket( char* packetMem, InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress ) = 0;
@@ -77,6 +77,9 @@ private:
     float                        mSimulatedLatency;
     
 protected:
+    bool                    bMultiThreading;
+    int                     mNumThreads;
+    
     std::shared_ptr<ThreadPool>         mPool;
     vector< ReceivedPacket > mPacketVector;
     int                      mCurrentPacketIndex;

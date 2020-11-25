@@ -20,7 +20,9 @@ public:
 private:
     Server();
 
-    bool    InitNetworkManager();
+    bool    InitNetworkManager(bool useMultiThreading);
+    bool    InitNetworkManager(bool useMultiThreading, int numThreads);
+    
     void    SetupWorld();
 
 };

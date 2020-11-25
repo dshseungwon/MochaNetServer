@@ -5,7 +5,8 @@ class NetworkManagerServer : public NetworkManager
 public:
     static NetworkManagerServer*    sInstance;
 
-    static bool                StaticInit( uint16_t inPort );
+    static bool                StaticInit( uint16_t inPort, bool useMultiThreading );
+    static bool                StaticInit( uint16_t inPort, bool useMultiThreading, int numThreads);
         
     virtual void            ProcessPacket( char* packetMem, InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress ) override;
     virtual void            HandleConnectionReset( const SocketAddress& inFromAddress ) override;

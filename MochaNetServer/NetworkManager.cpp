@@ -6,15 +6,14 @@ NetworkManager::NetworkManager() :
     mSimulatedLatency( 0.f ),
     mCurrentPacketIndex(0)
 {
-    mPool = std::make_shared<ThreadPool>(100);
-    mPacketVector.reserve(10000);
+    // mPacketVector.reserve(10000);
 }
 
 NetworkManager::~NetworkManager()
 {
 }
 
-bool NetworkManager::Init( uint16_t inPort )
+bool NetworkManager::Init( uint16_t inPort, bool useMultiThreading, int numThreads /* = 4 */)
 {
     mSocket = SocketUtil::CreateUDPSocket( INET );
     SocketAddress ownAddress( INADDR_ANY, inPort );
@@ -37,6 +36,13 @@ bool NetworkManager::Init( uint16_t inPort )
         LOG( "Failed to set the socket as nonblocking mode.", inPort );
         return false;
     }
+    
+    if (useMultiThreading)
+    {
+        bMultiThreading = true;
+        mNumThreads = numThreads;
+        mPool = std::make_shared<ThreadPool>(numThreads);
+    }
 
     return true;
 }
@@ -46,8 +52,7 @@ void NetworkManager::ProcessIncomingPackets()
     ReadIncomingPacketsIntoQueue();
 
     ProcessQueuedPackets();
-//    ProcessQueuedPacketsVector();
-
+    
     UpdateBytesSentLastFrame();
 
 }
@@ -154,12 +159,17 @@ void NetworkManager::ProcessQueuedPackets()
             InputMemoryBitStream& packetBuffer = nextPacket.GetPacketBuffer();
             const SocketAddress& sockAddr = nextPacket.GetFromAddress();
             
-            mPool->EnqueueJob([&, packetMem, packetBuffer, sockAddr]() mutable {
-                ProcessPacket( packetMem, packetBuffer, sockAddr );
-            });
+            if (bMultiThreading)
+            {
+                mPool->EnqueueJob([&, packetMem, packetBuffer, sockAddr]() mutable {
+                    ProcessPacket( packetMem, packetBuffer, sockAddr );
+                });
+            }
+            else
+            {
+                ProcessPacket( packetMem, nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
+            }
 
-//            ProcessPacket( nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
-            
             // LOG("%s", "Packet Popped!");
             mPacketQueue.pop();
         }

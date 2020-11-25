@@ -13,7 +13,7 @@ Server::Server()
     GameObjectRegistry::sInstance->RegisterCreationFunction( 'PLYR', FirstFantasyCharacterServer::StaticCreate );
     GameObjectRegistry::sInstance->RegisterCreationFunction( 'ARCH', ArcherCharacterServer::StaticCreate );
 
-    InitNetworkManager();
+    InitNetworkManager(false);
     
     // Setup latency
     float latency = 0.0f;
@@ -33,12 +33,20 @@ void Server::Run()
     AMMOPeer::Run();
 }
 
-bool Server::InitNetworkManager()
+bool Server::InitNetworkManager(bool useMultiThreading)
 {
     string portString = StringUtils::GetCommandLineArg( 1 );
     uint16_t port = stoi( portString );
 
-    return NetworkManagerServer::StaticInit( port );
+    return NetworkManagerServer::StaticInit( port, useMultiThreading );
+}
+
+bool Server::InitNetworkManager(bool useMultiThreading, int numThreads)
+{
+    string portString = StringUtils::GetCommandLineArg( 1 );
+    uint16_t port = stoi( portString );
+
+    return NetworkManagerServer::StaticInit( port, useMultiThreading, numThreads );
 }
 
 namespace

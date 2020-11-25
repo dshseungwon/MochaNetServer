@@ -11,10 +11,16 @@ NetworkManagerServer::NetworkManagerServer() :
 {
 }
 
-bool NetworkManagerServer::StaticInit( uint16_t inPort )
+bool NetworkManagerServer::StaticInit( uint16_t inPort, bool useMultiThreading )
 {
     sInstance = new NetworkManagerServer();
-    return sInstance->Init( inPort );
+    return sInstance->Init( inPort, useMultiThreading );
+}
+
+bool NetworkManagerServer::StaticInit( uint16_t inPort, bool useMultiThreading, int numThreads )
+{
+    sInstance = new NetworkManagerServer();
+    return sInstance->Init( inPort, useMultiThreading, numThreads );
 }
 
 void NetworkManagerServer::HandleConnectionReset( const SocketAddress& inFromAddress )
@@ -141,10 +147,16 @@ void NetworkManagerServer::SendOutgoingPackets()
         ClientProxyPtr clientProxy = it->second;
         if( clientProxy->IsLastMoveTimestampDirty() )
         {
-            mPool->EnqueueJob([&, clientProxy]() mutable {
-                SendStatePacketToClient(clientProxy);
-            });
-//            SendStatePacketToClient( clientProxy );
+            if (bMultiThreading)
+            {
+                mPool->EnqueueJob([&, clientProxy]() mutable {
+                    SendStatePacketToClient(clientProxy);
+                });
+            }
+            else
+            {
+                SendStatePacketToClient( clientProxy );
+            }
         }
     }
 }
