@@ -132,7 +132,8 @@ namespace
             con.Connect(_TSA("127.0.0.1,5432@sqlapi"), _TSA("postgres"), _TSA("password"), SA_PostgreSQL_Client);
             LOG("%s","Connected to the database.");
             
-            SACommand select(&con, _TSA("SELECT type, loc_x, loc_y, loc_z FROM field_objects"));
+            SACommand select(&con, _TSA("SELECT type, loc_x, loc_y, loc_z FROM field_objects WHERE type = :1"));
+            select << _TSA("ARCH");
             select.Execute();
 
             while(select.FetchNext()) {
@@ -141,19 +142,14 @@ namespace
                 double loc_y = select[3].asDouble();
                 double loc_z = select[4].asDouble();
                 
-                
                 LOG("Type: %s Vector(%f, %f, %f) \n", type.GetMultiByteChars(), loc_x, loc_y, loc_z);
                 
-                //        Vector3 archerLocation;
-                //        MochaObjectPtr go;
-                //
-                //        //make a mouse somewhere- where will these come from?
-                //        for( int i = 0; i < inNumber; ++i )
-                //        {
-                //            go = GameObjectRegistry::sInstance->CreateGameObject( 'ARCH' );
-                //            Vector3 archerLcation = MMOMath::GetRandomVector( minPos, maxPos );
-                //            go->SetLocation( archerLcation );
-                //        }
+                Vector3 archerLocation;
+                archerLocation.Set(loc_x, loc_y, loc_z);
+                MochaObjectPtr go;
+                
+                go = GameObjectRegistry::sInstance->CreateGameObject( 'ARCH' );
+                go->SetLocation( archerLocation );
             }
             
             
@@ -176,11 +172,8 @@ void Server::SetupWorld()
     
     CreateArchersFromDB();
     
-//    PutRandomArchersToDatabse(10);
-//    //spawn some random mice
 //    CreateRandomArcher( 10 );
-//
-//    //spawn more random mice!
+
 //    CreateRandomArcher( 10 );
 }
 
