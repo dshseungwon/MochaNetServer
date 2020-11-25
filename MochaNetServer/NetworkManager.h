@@ -60,6 +60,8 @@ private:
     void    UpdateBytesSentLastFrame();
     void    ReadIncomingPacketsIntoQueue();
     void    ProcessQueuedPackets();
+    
+    void    ProcessQueuedPacketsVector();
 
     queue< ReceivedPacket, list< ReceivedPacket > >    mPacketQueue;
 
@@ -74,6 +76,9 @@ private:
     float                        mSimulatedLatency;
     
     std::shared_ptr<ThreadPool>         mPool;
+    
+    vector< ReceivedPacket > mPacketVector;
+    int                      mCurrentPacketIndex;
 };
 
     

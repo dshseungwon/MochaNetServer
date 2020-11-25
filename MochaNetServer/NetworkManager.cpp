@@ -3,9 +3,11 @@
 NetworkManager::NetworkManager() :
     mBytesSentThisFrame( 0 ),
     mDropPacketChance( 0.f ),
-    mSimulatedLatency( 0.f )
+    mSimulatedLatency( 0.f ),
+    mCurrentPacketIndex(0)
 {
     mPool = std::make_shared<ThreadPool>(100);
+    mPacketVector.reserve(10000);
 }
 
 NetworkManager::~NetworkManager()
@@ -43,7 +45,8 @@ void NetworkManager::ProcessIncomingPackets()
 {
     ReadIncomingPacketsIntoQueue();
 
-    ProcessQueuedPackets();
+//    ProcessQueuedPackets();
+    ProcessQueuedPacketsVector();
 
     UpdateBytesSentLastFrame();
 
@@ -55,6 +58,8 @@ void NetworkManager::ReadIncomingPacketsIntoQueue()
 //    int packetSize = sizeof( packetMem );
     char * packetMem = new char[1500];
     int packetSize = 1500;
+    // Here exists a memory leak. Should be handled.
+    
     InputMemoryBitStream inputStream( packetMem, packetSize * 8 );
     SocketAddress fromAddress;
 
@@ -83,8 +88,8 @@ void NetworkManager::ReadIncomingPacketsIntoQueue()
 
             
             float simulatedReceivedTime = Timing::sInstance.GetTimef() + mSimulatedLatency;
-            mPacketQueue.emplace( simulatedReceivedTime, inputStream, fromAddress );
-
+//            mPacketQueue.emplace( simulatedReceivedTime, inputStream, fromAddress );
+            mPacketVector.emplace_back( simulatedReceivedTime, inputStream, fromAddress );
             
         }
         else
@@ -99,9 +104,36 @@ void NetworkManager::ReadIncomingPacketsIntoQueue()
     }
 }
 
+void NetworkManager::ProcessQueuedPacketsVector()
+{
+    while( mCurrentPacketIndex < mPacketVector.size() )
+    {
+        ReceivedPacket& nextPacket = mPacketVector[mCurrentPacketIndex];
+        
+        if( Timing::sInstance.GetTimef() >= nextPacket.GetReceivedTime() )
+        {
+            LOG("%s", "Packet Received!");
+
+            mPool->EnqueueJob([&](){
+                ProcessPacket( nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
+            });
+            
+//            ProcessPacket( nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
+
+            mCurrentPacketIndex++;
+//            mPacketVector.erase(mPacketVector.begin());
+        }
+        else
+        {
+            LOG("Current Server Time: %f", Timing::sInstance.GetTimef());
+            LOG("Packet Received Time: %f", nextPacket.GetReceivedTime());
+            break;
+        }
+    }
+}
+
 void NetworkManager::ProcessQueuedPackets()
 {
-    //look at the front packet...
     while( !mPacketQueue.empty() )
     {
         ReceivedPacket& nextPacket = mPacketQueue.front();
