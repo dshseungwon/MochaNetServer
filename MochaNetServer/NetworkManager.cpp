@@ -56,12 +56,7 @@ void NetworkManager::ReadIncomingPacketsIntoQueue()
 {
 //    char packetMem[ 1500 ];
 //    int packetSize = sizeof( packetMem );
-    char * packetMem = new char[1500];
-    int packetSize = 1500;
-    // Here exists a memory leak. Should be handled.
-    
-    InputMemoryBitStream inputStream( packetMem, packetSize * 8 );
-    SocketAddress fromAddress;
+//    Here exists a memory leak. Should be handled.
 
     //keep reading until we don't have anything to read ( or we hit a max number that we'll process per frame )
     int receivedPackedCount = 0;
@@ -69,19 +64,28 @@ void NetworkManager::ReadIncomingPacketsIntoQueue()
 
     while( receivedPackedCount < kMaxPacketsPerFrameCount )
     {
+        char * packetMem = new char[1500]();
+        int packetSize = 1500;
+        
+        InputMemoryBitStream inputStream( packetMem, packetSize * 8 );
+        SocketAddress fromAddress;
+        
         int readByteCount = mSocket->ReceiveFrom( packetMem, packetSize, fromAddress );
         if( readByteCount == 0 )
         {
             //nothing to read
+            delete[] packetMem;
             break;
         }
         else if( readByteCount == -WSAECONNRESET )
         {
             //port closed on other end, so DC this person immediately
+            delete[] packetMem;
             HandleConnectionReset( fromAddress );
         }
         else if( readByteCount > 0 )
         {
+            LOG("packetMem: %p", packetMem);
             inputStream.ResetToCapacity( readByteCount );
             ++receivedPackedCount;
             totalReadByteCount += readByteCount;
@@ -89,12 +93,13 @@ void NetworkManager::ReadIncomingPacketsIntoQueue()
             
             float simulatedReceivedTime = Timing::sInstance.GetTimef() + mSimulatedLatency;
 //            mPacketQueue.emplace( simulatedReceivedTime, inputStream, fromAddress );
-            mPacketVector.emplace_back( simulatedReceivedTime, inputStream, fromAddress );
+            mPacketVector.emplace_back( packetMem, simulatedReceivedTime, inputStream, fromAddress );
             
         }
         else
         {
-            //uhoh, error? exit or just keep going?
+            delete[] packetMem;
+            LOG ("%s", "Error @ ReadIncomingPacketsIntoQueue.");
         }
     }
 
@@ -115,7 +120,7 @@ void NetworkManager::ProcessQueuedPacketsVector()
             LOG("%s", "Packet Received!");
 
             mPool->EnqueueJob([&](){
-                ProcessPacket( nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
+                ProcessPacket( nextPacket.GetPacketMem(), nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
             });
             
 //            ProcessPacket( nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
@@ -143,7 +148,7 @@ void NetworkManager::ProcessQueuedPackets()
             LOG("%s", "Packet Received!");
 
             mPool->EnqueueJob([&](){
-                ProcessPacket( nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
+                ProcessPacket( nextPacket.GetPacketMem(), nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
             });
 
 //            ProcessPacket( nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
@@ -183,7 +188,8 @@ void NetworkManager::UpdateBytesSentLastFrame()
 }
 
 
-NetworkManager::ReceivedPacket::ReceivedPacket( float inReceivedTime, InputMemoryBitStream& ioInputMemoryBitStream, const SocketAddress& inFromAddress ) :
+NetworkManager::ReceivedPacket::ReceivedPacket( char* packetMem, float inReceivedTime, InputMemoryBitStream& ioInputMemoryBitStream, const SocketAddress& inFromAddress ) :
+    mPacketMem (packetMem),
     mReceivedTime( inReceivedTime ),
     mPacketBuffer( ioInputMemoryBitStream ),
     mFromAddress( inFromAddress )

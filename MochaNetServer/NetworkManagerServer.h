@@ -7,7 +7,7 @@ public:
 
     static bool                StaticInit( uint16_t inPort );
         
-    virtual void            ProcessPacket( InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress ) override;
+    virtual void            ProcessPacket( char* packetMem, InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress ) override;
     virtual void            HandleConnectionReset( const SocketAddress& inFromAddress ) override;
         
             void            SendOutgoingPackets();

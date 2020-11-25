@@ -27,7 +27,7 @@ void NetworkManagerServer::HandleConnectionReset( const SocketAddress& inFromAdd
     }
 }
 
-void NetworkManagerServer::ProcessPacket( InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress )
+void NetworkManagerServer::ProcessPacket( char* packetMem, InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress )
 {
     //try to get the client proxy for this address
     //pass this to the client proxy to process
@@ -41,6 +41,12 @@ void NetworkManagerServer::ProcessPacket( InputMemoryBitStream& inInputStream, c
     {
         ProcessPacket( ( *it ).second, inInputStream );
     }
+    
+//    mPacketVector.erase(mPacketVector.begin());
+
+    
+    LOG("Erase: %p", packetMem);
+    delete[] packetMem;
 }
 
 
