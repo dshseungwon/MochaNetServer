@@ -76,9 +76,8 @@ private:
     float                        mDropPacketChance;
     float                        mSimulatedLatency;
     
-    std::shared_ptr<ThreadPool>         mPool;
-    
 protected:
+    std::shared_ptr<ThreadPool>         mPool;
     vector< ReceivedPacket > mPacketVector;
     int                      mCurrentPacketIndex;
 };

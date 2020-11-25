@@ -141,7 +141,10 @@ void NetworkManagerServer::SendOutgoingPackets()
         ClientProxyPtr clientProxy = it->second;
         if( clientProxy->IsLastMoveTimestampDirty() )
         {
-            SendStatePacketToClient( clientProxy );
+            mPool->EnqueueJob([&, clientProxy]() mutable {
+                SendStatePacketToClient(clientProxy);
+            });
+//            SendStatePacketToClient( clientProxy );
         }
     }
 }
