@@ -43,9 +43,8 @@ void NetworkManagerServer::ProcessPacket( char* packetMem, InputMemoryBitStream&
     }
     
 //    mPacketVector.erase(mPacketVector.begin());
-
     
-    LOG("Erase: %p", packetMem);
+    // LOG("Erase: %p", packetMem);
     delete[] packetMem;
 }
 

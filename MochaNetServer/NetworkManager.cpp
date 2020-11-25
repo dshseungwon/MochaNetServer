@@ -85,7 +85,7 @@ void NetworkManager::ReadIncomingPacketsIntoQueue()
         }
         else if( readByteCount > 0 )
         {
-            LOG("packetMem: %p", packetMem);
+            // LOG("packetMem: %p", packetMem);
             inputStream.ResetToCapacity( readByteCount );
             ++receivedPackedCount;
             totalReadByteCount += readByteCount;
@@ -117,7 +117,7 @@ void NetworkManager::ProcessQueuedPacketsVector()
         
         if( Timing::sInstance.GetTimef() >= nextPacket.GetReceivedTime() )
         {
-            LOG("%s", "Packet Received!");
+             LOG("CurrentPacketIndex: %d", mCurrentPacketIndex);
 
             mPool->EnqueueJob([&](){
                 ProcessPacket( nextPacket.GetPacketMem(), nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
