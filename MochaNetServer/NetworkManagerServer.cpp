@@ -27,9 +27,10 @@ void NetworkManagerServer::HandleConnectionReset( const SocketAddress& inFromAdd
     }
 }
 
-void NetworkManagerServer::ProcessPacket( char* packetMem, InputMemoryBitStream inInputStream, const SocketAddress inFromAddress )
+void NetworkManagerServer::ProcessPacket( char* packetMem, InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress )
 {
-    LOG("inputStream 1: %p", &inInputStream);
+    // LOG("inputStream 1: %p", &inInputStream);
+    
     //try to get the client proxy for this address
     //pass this to the client proxy to process
     auto it = mAddressToClientMap.find( inFromAddress );
@@ -43,16 +44,16 @@ void NetworkManagerServer::ProcessPacket( char* packetMem, InputMemoryBitStream 
         ProcessPacket( ( *it ).second, inInputStream );
     }
     
-//    mPacketVector.erase(mPacketVector.begin());
+    // mPacketVector.erase(mPacketVector.begin());
 
     // LOG("Erase: %p", packetMem);
-    // delete[] packetMem;
+     delete[] packetMem;
 }
 
 
 void NetworkManagerServer::ProcessPacket( ClientProxyPtr inClientProxy, InputMemoryBitStream& inInputStream )
 {
-    LOG("inputStream 2: %p", &inInputStream);
+    // LOG("inputStream 2: %p", &inInputStream);
     //remember we got a packet so we know not to disconnect for a bit
     inClientProxy->UpdateLastPacketTime();
 

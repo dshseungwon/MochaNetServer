@@ -145,22 +145,22 @@ void NetworkManager::ProcessQueuedPackets()
         
         if( Timing::sInstance.GetTimef() >= nextPacket.GetReceivedTime() )
         {
-            LOG("%s", "Packet Received!");
+            //LOG("%s", "Packet Received!");
 
-            LOG("inputStream 0: %p", &nextPacket.GetPacketBuffer());
+            // LOG("inputStream 0: %p", &nextPacket.GetPacketBuffer());
             
             
             char* packetMem = nextPacket.GetPacketMem();
-            InputMemoryBitStream packetBuffer = nextPacket.GetPacketBuffer();
-            SocketAddress sockAddr = nextPacket.GetFromAddress();
+            InputMemoryBitStream& packetBuffer = nextPacket.GetPacketBuffer();
+            const SocketAddress& sockAddr = nextPacket.GetFromAddress();
             
-            mPool->EnqueueJob([&, packetMem, packetBuffer, sockAddr](){
+            mPool->EnqueueJob([&, packetMem, packetBuffer, sockAddr]() mutable {
                 ProcessPacket( packetMem, packetBuffer, sockAddr );
             });
 
 //            ProcessPacket( nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
             
-            LOG("%s", "Packet Popped!");
+            // LOG("%s", "Packet Popped!");
             mPacketQueue.pop();
         }
         else

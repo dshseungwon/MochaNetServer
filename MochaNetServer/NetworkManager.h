@@ -17,7 +17,7 @@ public:
     bool    Init( uint16_t inPort );
     void    ProcessIncomingPackets();
 
-    virtual void    ProcessPacket( char* packetMem, InputMemoryBitStream inInputStream, const SocketAddress inFromAddress ) = 0;
+    virtual void    ProcessPacket( char* packetMem, InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress ) = 0;
     virtual void    HandleConnectionReset( const SocketAddress& inFromAddress ) { ( void ) inFromAddress; }
 
             void    SendPacket( const OutputMemoryBitStream& inOutputStream, const SocketAddress& inFromAddress );
