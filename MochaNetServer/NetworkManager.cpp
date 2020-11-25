@@ -45,8 +45,8 @@ void NetworkManager::ProcessIncomingPackets()
 {
     ReadIncomingPacketsIntoQueue();
 
-//    ProcessQueuedPackets();
-    ProcessQueuedPacketsVector();
+    ProcessQueuedPackets();
+//    ProcessQueuedPacketsVector();
 
     UpdateBytesSentLastFrame();
 
@@ -92,8 +92,8 @@ void NetworkManager::ReadIncomingPacketsIntoQueue()
 
             
             float simulatedReceivedTime = Timing::sInstance.GetTimef() + mSimulatedLatency;
-//            mPacketQueue.emplace( simulatedReceivedTime, inputStream, fromAddress );
-            mPacketVector.emplace_back( packetMem, simulatedReceivedTime, inputStream, fromAddress );
+            mPacketQueue.emplace( packetMem, simulatedReceivedTime, inputStream, fromAddress );
+//            mPacketVector.emplace_back( packetMem, simulatedReceivedTime, inputStream, fromAddress );
             
         }
         else
@@ -147,12 +147,20 @@ void NetworkManager::ProcessQueuedPackets()
         {
             LOG("%s", "Packet Received!");
 
-            mPool->EnqueueJob([&](){
-                ProcessPacket( nextPacket.GetPacketMem(), nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
+            LOG("inputStream 0: %p", &nextPacket.GetPacketBuffer());
+            
+            
+            char* packetMem = nextPacket.GetPacketMem();
+            InputMemoryBitStream packetBuffer = nextPacket.GetPacketBuffer();
+            SocketAddress sockAddr = nextPacket.GetFromAddress();
+            
+            mPool->EnqueueJob([&, packetMem, packetBuffer, sockAddr](){
+                ProcessPacket( packetMem, packetBuffer, sockAddr );
             });
 
 //            ProcessPacket( nextPacket.GetPacketBuffer(), nextPacket.GetFromAddress() );
             
+            LOG("%s", "Packet Popped!");
             mPacketQueue.pop();
         }
         else
