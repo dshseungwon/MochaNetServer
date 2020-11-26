@@ -39,7 +39,16 @@ void NetworkManagerServer::ProcessPacket( char* packetMem, InputMemoryBitStream&
     
     //try to get the client proxy for this address
     //pass this to the client proxy to process
-    auto it = mAddressToClientMap.find( inFromAddress );
+    
+    AddressToClientMap::const_iterator it;
+    {
+        printf("Read Lock. ");
+        read_only_lock lock(mtx);
+        printf("Read Locked. ");
+        it = mAddressToClientMap.find( inFromAddress );
+        printf("Read Unlocked.\n");
+    }
+    
     if( it == mAddressToClientMap.end() )
     {
         //didn't find one? it's a new cilent..is the a HELO? if so, create a client proxy...
@@ -93,21 +102,32 @@ void NetworkManagerServer::HandlePacketFromNewClient( InputMemoryBitStream& inIn
         string name;
         inInputStream.Read( name );
         ClientProxyPtr newClientProxy = std::make_shared< ClientProxy >( inFromAddress, name, mNewPlayerId++ );
-        mAddressToClientMap[ inFromAddress ] = newClientProxy;
-        mPlayerIdToClientMap[ newClientProxy->GetPlayerId() ] = newClientProxy;
         
-        //tell the server about this client, spawn a cat, etc...
-        //if we had a generic message system, this would be a good use for it...
-        //instead we'll just tell the server directly
-        static_cast< Server* > ( AMMOPeer::sInstance.get() )->HandleNewClient( newClientProxy );
+        // code to update map
+        {
+            printf("Update Lock. ");
+            updatable_lock lock(mtx);
+            printf("Update Locked. ");
+            mAddressToClientMap[ inFromAddress ] = newClientProxy;
+            mPlayerIdToClientMap[ newClientProxy->GetPlayerId() ] = newClientProxy;
+            
+            static_cast< Server* > ( AMMOPeer::sInstance.get() )->HandleNewClient( newClientProxy );
+            printf("Update Unlocked.\n");
+        }
 
         //and welcome the client...
         SendWelcomePacket( newClientProxy );
 
         //and now init the replication manager with everything we know about!
-        for( const auto& pair: mNetworkIdToGameObjectMap )
         {
-            newClientProxy->GetReplicationManagerServer().ReplicateCreate( pair.first, pair.second->GetAllStateMask() );
+            printf("Read Lock. ");
+            read_only_lock lock(mtx);
+            printf("Read Locked. ");
+            for( const auto& pair: mNetworkIdToGameObjectMap )
+            {
+                newClientProxy->GetReplicationManagerServer().ReplicateCreate( pair.first, pair.second->GetAllStateMask() );
+            }
+            printf("Read Unlocked.\n");
         }
     }
     else
@@ -160,14 +180,6 @@ void NetworkManagerServer::SendOutgoingPackets()
         }
     }
 }
-
-//void NetworkManagerServer::UpdateAllClients()
-//{
-//    for( auto it = mAddressToClientMap.begin(), end = mAddressToClientMap.end(); it != end; ++it )
-//    {
-//        SendStatePacketToClient( it->second );
-//    }
-//}
 
 void NetworkManagerServer::SendStatePacketToClient( ClientProxyPtr inClientProxy )
 {

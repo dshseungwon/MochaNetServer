@@ -1,5 +1,9 @@
 #pragma once
 
+using mutex_type = std::shared_timed_mutex;
+using read_only_lock  = std::shared_lock<mutex_type>;
+using updatable_lock = std::unique_lock<mutex_type>;
+
 class NetworkManagerServer : public NetworkManager
 {
 public:
@@ -55,6 +59,8 @@ private:
     float            mTimeOfLastSatePacket;
     float            mTimeBetweenStatePackets;
     float            mClientDisconnectTimeout;
+    
+    mutex_type mtx;
     
 };
 

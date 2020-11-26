@@ -12,7 +12,8 @@ Server::Server()
     GameObjectRegistry::sInstance->RegisterCreationFunction( 'PLYR', FirstFantasyCharacterServer::StaticCreate );
     GameObjectRegistry::sInstance->RegisterCreationFunction( 'ARCH', ArcherCharacterServer::StaticCreate );
 
-    InitNetworkManager(false);
+    // Pass 'true' to enable multi-threading
+    InitNetworkManager(true);
     
     // Setup latency
     float latency = 0.0f;
@@ -171,7 +172,7 @@ void Server::SetupWorld()
     // There exists an error where number of object exceeds certain number,
     // which occurs at client side.
     
-    CreateArchersFromDB();
+//    CreateArchersFromDB();
     
 //    CreateRandomArcher( 10 );
 
