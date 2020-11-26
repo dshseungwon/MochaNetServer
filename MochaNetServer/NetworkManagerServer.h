@@ -25,7 +25,7 @@ public:
 
             void            RespawnPlayers();
 
-            ClientProxyPtr    GetClientProxy( int inPlayerId ) const;
+            ClientProxyPtr    GetClientProxy( int inPlayerId );
 
 private:
             NetworkManagerServer();

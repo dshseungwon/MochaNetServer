@@ -89,13 +89,17 @@ protected:
     
 inline MochaObjectPtr NetworkManager::GetGameObject( int inNetworkId ) const
 {
-    auto gameObjectIt = mNetworkIdToGameObjectMap.find( inNetworkId );
+    IntToGameObjectMap::const_iterator gameObjectIt;
+    gameObjectIt = mNetworkIdToGameObjectMap.find( inNetworkId );
+
     if( gameObjectIt != mNetworkIdToGameObjectMap.end() )
     {
+        printf("Found GameObject and Return.\n");
         return gameObjectIt->second;
     }
     else
     {
+        printf("GetGameObject has failed.\nThe gameobject does not exist at mNetworkIdToGameObjectMap.\n");
         return MochaObjectPtr();
     }
 }

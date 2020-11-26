@@ -25,8 +25,12 @@ bool NetworkManagerServer::StaticInit( uint16_t inPort, bool useMultiThreading, 
 
 void NetworkManagerServer::HandleConnectionReset( const SocketAddress& inFromAddress )
 {
-    //just dc the client right away...
-    auto it = mAddressToClientMap.find( inFromAddress );
+    AddressToClientMap::const_iterator it;
+    {
+        read_only_lock lock(mtx);
+        it = mAddressToClientMap.find( inFromAddress );
+    }
+    
     if( it != mAddressToClientMap.end() )
     {
         HandleClientDisconnected( it->second );
@@ -42,11 +46,8 @@ void NetworkManagerServer::ProcessPacket( char* packetMem, InputMemoryBitStream&
     
     AddressToClientMap::const_iterator it;
     {
-        printf("Read Lock. ");
         read_only_lock lock(mtx);
-        printf("Read Locked. ");
         it = mAddressToClientMap.find( inFromAddress );
-        printf("Read Unlocked.\n");
     }
     
     if( it == mAddressToClientMap.end() )
@@ -105,30 +106,24 @@ void NetworkManagerServer::HandlePacketFromNewClient( InputMemoryBitStream& inIn
         
         // code to update map
         {
-            printf("Update Lock. ");
+            printf("Update Lock: HandlePacketFromNewClient\n");
             updatable_lock lock(mtx);
-            printf("Update Locked. ");
+            // printf("Update Locked. ");
             mAddressToClientMap[ inFromAddress ] = newClientProxy;
             mPlayerIdToClientMap[ newClientProxy->GetPlayerId() ] = newClientProxy;
             
             static_cast< Server* > ( AMMOPeer::sInstance.get() )->HandleNewClient( newClientProxy );
-            printf("Update Unlocked.\n");
-        }
-
-        //and welcome the client...
-        SendWelcomePacket( newClientProxy );
-
-        //and now init the replication manager with everything we know about!
-        {
-            printf("Read Lock. ");
-            read_only_lock lock(mtx);
-            printf("Read Locked. ");
+            
             for( const auto& pair: mNetworkIdToGameObjectMap )
             {
                 newClientProxy->GetReplicationManagerServer().ReplicateCreate( pair.first, pair.second->GetAllStateMask() );
             }
-            printf("Read Unlocked.\n");
+            // printf("Update Unlocked.\n");
         }
+
+        //and welcome the client...
+        SendWelcomePacket( newClientProxy );
+        
     }
     else
     {
@@ -151,6 +146,7 @@ void NetworkManagerServer::SendWelcomePacket( ClientProxyPtr inClientProxy )
 
 void NetworkManagerServer::RespawnPlayers()
 {
+    read_only_lock lock(mtx);
     for( auto it = mAddressToClientMap.begin(), end = mAddressToClientMap.end(); it != end; ++it )
     {
         ClientProxyPtr clientProxy = it->second;
@@ -190,8 +186,6 @@ void NetworkManagerServer::SendStatePacketToClient( ClientProxyPtr inClientProxy
     statePacket.Write( kStateCC );
 
     WriteLastMoveTimestampIfDirty( statePacket, inClientProxy );
-
-    //AddScoreBoardStateToPacket( statePacket );
 
     inClientProxy->GetReplicationManagerServer().Write( statePacket );
     SendPacket( statePacket, inClientProxy->GetSocketAddress() );
@@ -255,9 +249,15 @@ void NetworkManagerServer::HandleInputPacket( ClientProxyPtr inClientProxy, Inpu
     }
 }
 
-ClientProxyPtr NetworkManagerServer::GetClientProxy( int inPlayerId ) const
+ClientProxyPtr NetworkManagerServer::GetClientProxy( int inPlayerId )
 {
-    auto it = mPlayerIdToClientMap.find( inPlayerId );
+    IntToClientMap::const_iterator it;
+    
+    {
+        read_only_lock lock(mtx);
+        it = mPlayerIdToClientMap.find( inPlayerId );
+    }
+    
     if( it != mPlayerIdToClientMap.end() )
     {
         return it->second;
@@ -271,15 +271,19 @@ void NetworkManagerServer::CheckForDisconnects()
     vector< ClientProxyPtr > clientsToDC;
 
     float minAllowedLastPacketFromClientTime = Timing::sInstance.GetTimef() - mClientDisconnectTimeout;
-    for( const auto& pair: mAddressToClientMap )
+    
     {
-        if( pair.second->GetLastPacketFromClientTime() < minAllowedLastPacketFromClientTime )
+        read_only_lock lock(mtx);
+        for( const auto& pair: mAddressToClientMap )
         {
-            //can't remove from map while in iterator, so just remember for later...
-            clientsToDC.push_back( pair.second );
+            if( pair.second->GetLastPacketFromClientTime() < minAllowedLastPacketFromClientTime )
+            {
+                //can't remove from map while in iterator, so just remember for later...
+                clientsToDC.push_back( pair.second );
+            }
         }
     }
-
+    
     for( ClientProxyPtr client: clientsToDC )
     {
         HandleClientDisconnected( client );
@@ -290,10 +294,16 @@ void NetworkManagerServer::HandleClientDisconnected( ClientProxyPtr inClientProx
 {
     LOG( "Client %s has been disconnected [%d]", inClientProxy->GetName().c_str(), inClientProxy->GetPlayerId() );
     
-    mPlayerIdToClientMap.erase( inClientProxy->GetPlayerId() );
-    mAddressToClientMap.erase( inClientProxy->GetSocketAddress() );
-    static_cast< Server* > ( AMMOPeer::sInstance.get() )->HandleLostClient( inClientProxy );
-
+    {
+        printf("Update Lock: HandleClientDisconnected\n");
+        updatable_lock lock(mtx);
+//        printf("Update Locked. ");
+        mPlayerIdToClientMap.erase( inClientProxy->GetPlayerId() );
+        mAddressToClientMap.erase( inClientProxy->GetSocketAddress() );
+        static_cast< Server* > ( AMMOPeer::sInstance.get() )->HandleLostClient( inClientProxy );
+//        printf("Update Unlocked.\n");
+    }
+    
     //was that the last client? if so, bye!
     if( mAddressToClientMap.empty() )
     {
@@ -307,20 +317,30 @@ void NetworkManagerServer::RegisterGameObject( MochaObjectPtr inGameObject )
     int newNetworkId = GetNewNetworkId();
     inGameObject->SetNetworkId( newNetworkId );
 
-    //add mapping from network id to game object
-    mNetworkIdToGameObjectMap[ newNetworkId ] = inGameObject;
 
-    //tell all client proxies this is new...
-    for( const auto& pair: mAddressToClientMap )
-    {
-        pair.second->GetReplicationManagerServer().ReplicateCreate( newNetworkId, inGameObject->GetAllStateMask() );
-    }
+    // We Do not LOCK in here.
+    // As we already have locked @handlePacketFromNewClient
+    
+        //add mapping from network id to game object
+        mNetworkIdToGameObjectMap[ newNetworkId ] = inGameObject;
+
+        //tell all client proxies this is new...
+        for( const auto& pair: mAddressToClientMap )
+        {
+            pair.second->GetReplicationManagerServer().ReplicateCreate( newNetworkId, inGameObject->GetAllStateMask() );
+        }
+    
 }
 
 
 void NetworkManagerServer::UnregisterGameObject( IMochaObject* inGameObject )
 {
+    printf("Update Lock: UnregisterGameObject\n");
+    updatable_lock lock(mtx);
+//    printf("Update Locked: UNREGISTER GAMEOBJECT");
+    
     int networkId = inGameObject->GetNetworkId();
+
     mNetworkIdToGameObjectMap.erase( networkId );
 
     //tell all client proxies to STOP replicating!
@@ -329,14 +349,20 @@ void NetworkManagerServer::UnregisterGameObject( IMochaObject* inGameObject )
     {
         pair.second->GetReplicationManagerServer().ReplicateDestroy( networkId );
     }
+    
+//    printf("Update Unlocked: UNREGISTER GAMEOBJECT");
 }
 
 void NetworkManagerServer::SetStateDirty( int inNetworkId, uint32_t inDirtyState )
 {
+    printf("Update Lock: SetStateDirty\n");
+    updatable_lock lock(mtx);
+//    printf("Update Locked. ");
     //tell everybody this is dirty
     for( const auto& pair: mAddressToClientMap )
     {
         pair.second->GetReplicationManagerServer().SetStateDirty( inNetworkId, inDirtyState );
     }
+//    printf("Update Unlocked.\n");
 }
 
