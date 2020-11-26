@@ -26,6 +26,8 @@ public:
             void            RespawnPlayers();
 
             ClientProxyPtr    GetClientProxy( int inPlayerId );
+    
+    inline    MochaObjectPtr    GetGameObject( int inNetworkId );
 
 private:
             NetworkManagerServer();
@@ -70,4 +72,25 @@ inline MochaObjectPtr NetworkManagerServer::RegisterAndReturn( IMochaObject* inG
     MochaObjectPtr toRet( inGameObject );
     RegisterGameObject( toRet );
     return toRet;
+}
+
+inline MochaObjectPtr NetworkManagerServer::GetGameObject( int inNetworkId )
+{
+    IntToGameObjectMap::const_iterator gameObjectIt;
+    
+    {
+        read_only_lock lock(mtx);
+        gameObjectIt = mNetworkIdToGameObjectMap.find( inNetworkId );
+    }
+
+    if( gameObjectIt != mNetworkIdToGameObjectMap.end() )
+    {
+        // printf("Found GameObject and Return.\n");
+        return gameObjectIt->second;
+    }
+    else
+    {
+        printf("GetGameObject has failed.\nThe gameobject does not exist at mNetworkIdToGameObjectMap.\n");
+        return MochaObjectPtr();
+    }
 }

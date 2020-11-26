@@ -30,7 +30,6 @@ public:
             void    SetSimulatedLatency( float inLatency )    { mSimulatedLatency = inLatency; }
             float    GetSimulatedLatency() const                { return mSimulatedLatency; }
 
-            inline    MochaObjectPtr    GetGameObject( int inNetworkId ) const;
             void    AddToNetworkIdToGameObjectMap( MochaObjectPtr inGameObject );
             void    RemoveFromNetworkIdToGameObjectMap( MochaObjectPtr inGameObject );
 
@@ -85,21 +84,3 @@ protected:
     int                      mCurrentPacketIndex;
 };
 
-    
-    
-inline MochaObjectPtr NetworkManager::GetGameObject( int inNetworkId ) const
-{
-    IntToGameObjectMap::const_iterator gameObjectIt;
-    gameObjectIt = mNetworkIdToGameObjectMap.find( inNetworkId );
-
-    if( gameObjectIt != mNetworkIdToGameObjectMap.end() )
-    {
-        printf("Found GameObject and Return.\n");
-        return gameObjectIt->second;
-    }
-    else
-    {
-        printf("GetGameObject has failed.\nThe gameobject does not exist at mNetworkIdToGameObjectMap.\n");
-        return MochaObjectPtr();
-    }
-}

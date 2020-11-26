@@ -355,7 +355,7 @@ void NetworkManagerServer::UnregisterGameObject( IMochaObject* inGameObject )
 
 void NetworkManagerServer::SetStateDirty( int inNetworkId, uint32_t inDirtyState )
 {
-    printf("Update Lock: SetStateDirty\n");
+    // printf("Update Lock: SetStateDirty\n");
     updatable_lock lock(mtx);
 //    printf("Update Locked. ");
     //tell everybody this is dirty
@@ -365,4 +365,3 @@ void NetworkManagerServer::SetStateDirty( int inNetworkId, uint32_t inDirtyState
     }
 //    printf("Update Unlocked.\n");
 }
-
