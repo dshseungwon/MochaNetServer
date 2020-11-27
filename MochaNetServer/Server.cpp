@@ -1,4 +1,5 @@
 #include "MochaServerPCH.h"
+#include "SQLAPI.h"
 
 bool Server::StaticInit()
 {
@@ -11,6 +12,8 @@ Server::Server()
 {
     GameObjectRegistry::sInstance->RegisterCreationFunction( 'PLYR', FirstFantasyCharacterServer::StaticCreate );
     GameObjectRegistry::sInstance->RegisterCreationFunction( 'ARCH', ArcherCharacterServer::StaticCreate );
+
+    DatabaseManager::StaticInit();
 
     // Pass 'true' to enable multi-threading
     InitNetworkManager(true);

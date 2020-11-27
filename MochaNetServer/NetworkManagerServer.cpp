@@ -36,30 +36,6 @@ void NetworkManagerServer::HandleConnectionReset( const SocketAddress& inFromAdd
     }
 }
 
-
-namespace
-{
-    DBAuthResult GetClientNameByLogInDB(string id, string pw)
-    {
-        struct DBAuthResult ret;
-        return ret;
-    }
-    DBAuthResult GetClientNameBySignUpDB(string id, string pw, string name)
-    {
-        struct DBAuthResult ret;
-        
-        
-        
-        
-        
-        ret.resultCode = 0;
-        ret.name = "Seungwon";
-        return ret;
-    }
-}
-
-
-
 void NetworkManagerServer::ProcessPacket( char* packetMem, InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress )
 {
     AuthPendingClientSet::const_iterator authIt;
@@ -178,7 +154,7 @@ void NetworkManagerServer::ProcessClientLogInPacket(InputMemoryBitStream &inInpu
     string pw;
     inInputStream.Read ( pw );
     
-    struct DBAuthResult authResult = GetClientNameByLogInDB(id, pw);
+    struct DBAuthResult authResult = DatabaseManager::sInstance->GetClientNameByLogInDB(id, pw);
     
     // Successfully found the user.
     if (authResult.resultCode == 0)
@@ -261,7 +237,7 @@ void NetworkManagerServer::ProcessClientSignUpPacket(InputMemoryBitStream &inInp
     string name;
     inInputStream.Read ( name );
     
-    struct DBAuthResult authResult = GetClientNameBySignUpDB(id, pw, name);
+    struct DBAuthResult authResult = DatabaseManager::sInstance->GetClientNameBySignUpDB(id, pw, name);
     
     // Successfully found the user.
     if (authResult.resultCode == 0)
