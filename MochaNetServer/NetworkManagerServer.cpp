@@ -159,7 +159,6 @@ void NetworkManagerServer::ProcessClientLogInPacket(InputMemoryBitStream &inInpu
     // Successfully found the user.
     if (authResult.resultCode == 0)
     {
-        printf("name: %s", authResult.name.c_str());
         ClientProxyPtr newClientProxy = std::make_shared< ClientProxy >( inFromAddress, authResult.name, mNewPlayerId++ );
         
         // code to update map

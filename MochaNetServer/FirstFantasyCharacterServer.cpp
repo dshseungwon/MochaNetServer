@@ -8,7 +8,7 @@ FirstFantasyCharacterServer::FirstFantasyCharacterServer() :
     mTimeOfNextShot( 0.f ),
     mTimeBetweenShots( 0.2f ),
     mMaxRotationSpeed( 5.f ),
-    mMaxLinearSpeed( 1000.f ),
+    mMaxLinearSpeed( 3000.f ),
     mVelocity( Vector3::Zero ),
     mWallRestitution( 0.1f ),
     mCatRestitution( 0.1f ),
