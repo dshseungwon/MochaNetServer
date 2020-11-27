@@ -4,6 +4,12 @@ using mutex_type = std::shared_timed_mutex;
 using read_only_lock  = std::shared_lock<mutex_type>;
 using updatable_lock = std::unique_lock<mutex_type>;
 
+struct DBAuthResult
+{
+    int resultCode;
+    string name;
+};
+
 class NetworkManagerServer : public NetworkManager
 {
 public:
@@ -32,11 +38,23 @@ public:
 private:
             NetworkManagerServer();
 
-            void    HandlePacketFromNewClient( InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress );
+            void    ProcessClientHeartbeat( InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress );
+    
+            void    SendServerHeartbeat( const SocketAddress& inFromAddress );
+    
+            void    HandlePacketFromAuthPendingClient( InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress );
+    
+            void    ProcessClientLogInPacket( InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress );
+    
+            void    ProcessClientSignUpPacket( InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress );
+    
             void    ProcessPacket( ClientProxyPtr inClientProxy, InputMemoryBitStream& inInputStream );
-            
-            void    SendWelcomePacket( ClientProxyPtr inClientProxy );
-            // void    UpdateAllClients();
+                
+            void    SendLoggedInPacket( ClientProxyPtr inClientProxy );
+
+            void    SendSignedUpPacket( ClientProxyPtr inClientProxy );
+    
+            void    SendAuthFailurePacket( const SocketAddress& inFromAddress, const DBAuthResult authResult );
             
             void    AddWorldStateToPacket( OutputMemoryBitStream& inOutputStream );
 
@@ -48,10 +66,12 @@ private:
             void    HandleClientDisconnected( ClientProxyPtr inClientProxy );
 
             int        GetNewNetworkId();
-
+    
+    typedef unordered_set< SocketAddress > AuthPendingClientSet;
     typedef unordered_map< int, ClientProxyPtr >    IntToClientMap;
     typedef unordered_map< SocketAddress, ClientProxyPtr >    AddressToClientMap;
 
+    AuthPendingClientSet      mAuthPendingClientSet;
     AddressToClientMap        mAddressToClientMap;
     IntToClientMap            mPlayerIdToClientMap;
 

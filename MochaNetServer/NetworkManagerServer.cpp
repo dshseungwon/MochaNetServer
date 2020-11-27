@@ -2,7 +2,6 @@
 
 NetworkManagerServer*    NetworkManagerServer::sInstance;
 
-
 NetworkManagerServer::NetworkManagerServer() :
     mNewPlayerId( 1 ),
     mNewNetworkId( 1 ),
@@ -37,27 +36,69 @@ void NetworkManagerServer::HandleConnectionReset( const SocketAddress& inFromAdd
     }
 }
 
+
+namespace
+{
+    DBAuthResult GetClientNameByLogInDB(string id, string pw)
+    {
+        struct DBAuthResult ret;
+        return ret;
+    }
+    DBAuthResult GetClientNameBySignUpDB(string id, string pw, string name)
+    {
+        struct DBAuthResult ret;
+        
+        
+        
+        
+        
+        ret.resultCode = 0;
+        ret.name = "Seungwon";
+        return ret;
+    }
+}
+
+
+
 void NetworkManagerServer::ProcessPacket( char* packetMem, InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress )
 {
-    // LOG("inputStream 1: %p", &inInputStream);
-    
-    //try to get the client proxy for this address
-    //pass this to the client proxy to process
-    
-    AddressToClientMap::const_iterator it;
+    AuthPendingClientSet::const_iterator authIt;
     {
         read_only_lock lock(mtx);
-        it = mAddressToClientMap.find( inFromAddress );
+        authIt = mAuthPendingClientSet.find( inFromAddress );
     }
     
-    if( it == mAddressToClientMap.end() )
+    // Socket Address를 인증대기목록에서 찾지 못한 경우
+    // Heartbeat를 쏴주면서, 인증패킷을 보내도록 해야한다.
+    if( authIt == mAuthPendingClientSet.end() )
     {
-        //didn't find one? it's a new cilent..is the a HELO? if so, create a client proxy...
-        HandlePacketFromNewClient( inInputStream, inFromAddress );
+        // We do not create client proxy yet.
+        ProcessClientHeartbeat( inInputStream, inFromAddress );
     }
+    
+    // Socket Address가 인증대기목록에 있는경우, 클라이언트는 로그인이나 사인업 패킷을 보냈을꺼임.
     else
     {
-        ProcessPacket( ( *it ).second, inInputStream );
+        // 이젠 Address로 Client를 찾아보자
+        AddressToClientMap::const_iterator clientIt;
+        {
+            read_only_lock lock(mtx);
+            clientIt = mAddressToClientMap.find ( inFromAddress );
+        }
+        
+        // AddressToClient 맵에 없다는 거는 클라이언트 프록시가 아직 안만들어졌다는 것.
+        // 즉 아직 인증이 안되어있다는 것임.
+        if ( clientIt == mAddressToClientMap.end() )
+        {
+            // We create Client proxy in here.
+            HandlePacketFromAuthPendingClient ( inInputStream, inFromAddress );
+        }
+        
+        // 이 경우는 Client가 인증이 되었을 가능성이 높음.
+        else
+        {
+            ProcessPacket( ( *clientIt ).second, inInputStream );
+        }
     }
     
     // mPacketVector.erase(mPacketVector.begin());
@@ -66,52 +107,93 @@ void NetworkManagerServer::ProcessPacket( char* packetMem, InputMemoryBitStream&
      delete[] packetMem;
 }
 
-
-void NetworkManagerServer::ProcessPacket( ClientProxyPtr inClientProxy, InputMemoryBitStream& inInputStream )
-{
-    // LOG("inputStream 2: %p", &inInputStream);
-    //remember we got a packet so we know not to disconnect for a bit
-    inClientProxy->UpdateLastPacketTime();
-
-    uint32_t    packetType;
-    inInputStream.Read( packetType );
-    switch( packetType )
-    {
-    case kHelloCC:
-        //need to resend welcome. to be extra safe we should check the name is the one we expect from this address,
-        //otherwise something weird is going on...
-        SendWelcomePacket( inClientProxy );
-        break;
-    case kInputCC:
-        HandleInputPacket( inClientProxy, inInputStream );
-        break;
-    default:
-        LOG( "Unknown packet type: %d", packetType);
-        break;
-    }
-}
-
-
-void NetworkManagerServer::HandlePacketFromNewClient( InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress )
+void NetworkManagerServer::ProcessClientHeartbeat(InputMemoryBitStream &inInputStream, const SocketAddress &inFromAddress)
 {
     //read the beginning- is it a hello?
     uint32_t    packetType;
     inInputStream.Read( packetType );
     if(  packetType == kHelloCC )
     {
-        //read the name
-        string name;
-        inInputStream.Read( name );
-        ClientProxyPtr newClientProxy = std::make_shared< ClientProxy >( inFromAddress, name, mNewPlayerId++ );
+        // code to update map
+        {
+            printf("Update Lock: ProcessClientHeartbeat\n");
+            updatable_lock lock(mtx);
+            mAuthPendingClientSet.insert(inFromAddress);
+        }
+
+        SendServerHeartbeat(inFromAddress);
+    }
+    else
+    {
+        //bad incoming packet from unknown client- we're under attack!!
+        LOG( "Bad incoming packet: %d", packetType);
+    }
+}
+
+void NetworkManagerServer::SendServerHeartbeat(const SocketAddress &inFromAddress)
+{
+    // Send Client a welcomePacket.
+    // But the client has not authenticated yet.
+    OutputMemoryBitStream heartbeatPacket;
+
+    heartbeatPacket.Write( kWelcomeCC );
+
+    printf( "Server sent heartbeat.\n" );
+
+    SendPacket( heartbeatPacket, inFromAddress );
+}
+
+void NetworkManagerServer::HandlePacketFromAuthPendingClient( InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress )
+{
+    uint32_t    packetType;
+    inInputStream.Read( packetType );
+    
+    // Server's heartbeat has been dropped.
+    if( packetType == kHelloCC )
+    {
+        SendServerHeartbeat(inFromAddress);
+    }
+    // Client Request Login
+    else if(  packetType == kLogCC )
+    {
+        ProcessClientLogInPacket(inInputStream, inFromAddress);
+    }
+    
+    // Client Request SignUP
+    else if ( packetType == kSignCC )
+    {
+        ProcessClientSignUpPacket(inInputStream, inFromAddress);
+    }
+    else
+    {
+        LOG( "Bad incoming packet: %d", packetType);
+    }
+}
+
+void NetworkManagerServer::ProcessClientLogInPacket(InputMemoryBitStream &inInputStream, const SocketAddress &inFromAddress)
+{
+    //read the name
+    string id;
+    inInputStream.Read( id );
+    string pw;
+    inInputStream.Read ( pw );
+    
+    struct DBAuthResult authResult = GetClientNameByLogInDB(id, pw);
+    
+    // Successfully found the user.
+    if (authResult.resultCode == 0)
+    {
+        ClientProxyPtr newClientProxy = std::make_shared< ClientProxy >( inFromAddress, authResult.name, mNewPlayerId++ );
         
         // code to update map
         {
-            printf("Update Lock: HandlePacketFromNewClient\n");
+            printf("Update Lock: ProcessClientLogInPacket\n");
             updatable_lock lock(mtx);
             // printf("Update Locked. ");
             mAddressToClientMap[ inFromAddress ] = newClientProxy;
             mPlayerIdToClientMap[ newClientProxy->GetPlayerId() ] = newClientProxy;
             
+            // Here creates a client character in server.
             static_cast< Server* > ( AMMOPeer::sInstance.get() )->HandleNewClient( newClientProxy );
             
             for( const auto& pair: mNetworkIdToGameObjectMap )
@@ -122,26 +204,125 @@ void NetworkManagerServer::HandlePacketFromNewClient( InputMemoryBitStream& inIn
         }
 
         //and welcome the client...
-        SendWelcomePacket( newClientProxy );
-        
+        SendLoggedInPacket( newClientProxy );
     }
+    
+    // Failed to found the user.
     else
     {
-        //bad incoming packet from unknown client- we're under attack!!
-        LOG( "Bad incoming packet: %d", packetType);
+        SendAuthFailurePacket( inFromAddress, authResult );
     }
 }
 
-void NetworkManagerServer::SendWelcomePacket( ClientProxyPtr inClientProxy )
+void NetworkManagerServer::SendLoggedInPacket( ClientProxyPtr inClientProxy )
 {
-    OutputMemoryBitStream welcomePacket;
+    OutputMemoryBitStream loggedInPacket;
 
-    welcomePacket.Write( kWelcomeCC );
-    welcomePacket.Write( inClientProxy->GetPlayerId() );
+    loggedInPacket.Write( kLoggedCC );
+    loggedInPacket.Write( inClientProxy->GetPlayerId() );
 
-    LOG( "Server Welcoming, new client '%s' as player %d", inClientProxy->GetName().c_str(), inClientProxy->GetPlayerId() );
+    LOG( "[Log In] Server Welcoming, new client '%s' as player %d", inClientProxy->GetName().c_str(), inClientProxy->GetPlayerId() );
 
-    SendPacket( welcomePacket, inClientProxy->GetSocketAddress() );
+    SendPacket( loggedInPacket, inClientProxy->GetSocketAddress() );
+}
+
+void NetworkManagerServer::SendSignedUpPacket( ClientProxyPtr inClientProxy )
+{
+    OutputMemoryBitStream signedUpPacket;
+
+    signedUpPacket.Write( kSignedCC );
+    signedUpPacket.Write( inClientProxy->GetPlayerId() );
+
+    LOG( "[Sign Up] Server Welcoming, new client '%s' as player %d", inClientProxy->GetName().c_str(), inClientProxy->GetPlayerId() );
+
+    SendPacket( signedUpPacket, inClientProxy->GetSocketAddress() );
+}
+
+void NetworkManagerServer::SendAuthFailurePacket(const SocketAddress &inFromAddress, const DBAuthResult authResult)
+{
+    OutputMemoryBitStream authFailPacket;
+
+    authFailPacket.Write( kFailedCC );
+    
+    authFailPacket.Write( authResult.resultCode );
+
+    printf( "Server sent auth failure.\n" );
+
+    SendPacket( authFailPacket, inFromAddress );
+}
+
+void NetworkManagerServer::ProcessClientSignUpPacket(InputMemoryBitStream &inInputStream, const SocketAddress &inFromAddress)
+{
+    //read the name
+    string id;
+    inInputStream.Read( id );
+    string pw;
+    inInputStream.Read ( pw );
+    string name;
+    inInputStream.Read ( name );
+    
+    struct DBAuthResult authResult = GetClientNameBySignUpDB(id, pw, name);
+    
+    // Successfully found the user.
+    if (authResult.resultCode == 0)
+    {
+        ClientProxyPtr newClientProxy = std::make_shared< ClientProxy >( inFromAddress, authResult.name, mNewPlayerId++ );
+        
+        // code to update map
+        {
+            printf("Update Lock: ProcessClientSignUpPacket\n");
+            updatable_lock lock(mtx);
+            // printf("Update Locked. ");
+            mAddressToClientMap[ inFromAddress ] = newClientProxy;
+            mPlayerIdToClientMap[ newClientProxy->GetPlayerId() ] = newClientProxy;
+            
+            // Here creates a client character in server.
+            static_cast< Server* > ( AMMOPeer::sInstance.get() )->HandleNewClient( newClientProxy );
+            
+            for( const auto& pair: mNetworkIdToGameObjectMap )
+            {
+                newClientProxy->GetReplicationManagerServer().ReplicateCreate( pair.first, pair.second->GetAllStateMask() );
+            }
+            // printf("Update Unlocked.\n");
+        }
+
+        //and welcome the client...
+        SendSignedUpPacket( newClientProxy );
+    }
+    
+    // Failed to found the user.
+    else
+    {
+        SendAuthFailurePacket( inFromAddress, authResult );
+    }
+}
+
+
+void NetworkManagerServer::ProcessPacket( ClientProxyPtr inClientProxy, InputMemoryBitStream& inInputStream )
+{
+    //remember we got a packet so we know not to disconnect for a bit
+    inClientProxy->UpdateLastPacketTime();
+
+    uint32_t    packetType;
+    inInputStream.Read( packetType );
+    switch( packetType )
+    {
+    case kHelloCC:
+        printf( "Authenticated client has sent a hello Packet.\n");
+        break;
+    case kSignCC:
+        SendSignedUpPacket( inClientProxy );
+        break;
+    case kLogCC:
+        SendLoggedInPacket ( inClientProxy );
+        break;
+    case kInputCC:
+        HandleInputPacket( inClientProxy, inInputStream );
+        break;
+    default:
+        LOG( "Unknown packet type: %d", packetType);
+        break;
+    }
 }
 
 void NetworkManagerServer::RespawnPlayers()
@@ -365,3 +546,46 @@ void NetworkManagerServer::SetStateDirty( int inNetworkId, uint32_t inDirtyState
     }
 //    printf("Update Unlocked.\n");
 }
+
+
+//void NetworkManagerServer::HandlePacketFromNewClient( InputMemoryBitStream& inInputStream, const SocketAddress& inFromAddress )
+//{
+//    //read the beginning- is it a hello?
+//    uint32_t    packetType;
+//    inInputStream.Read( packetType );
+//    if(  packetType == kHelloCC )
+//    {
+//        //read the name
+//        string name;
+//        inInputStream.Read( name );
+//        ClientProxyPtr newClientProxy = std::make_shared< ClientProxy >( inFromAddress, name, mNewPlayerId++ );
+//
+//        // code to update map
+//        {
+//            printf("Update Lock: HandlePacketFromNewClient\n");
+//            updatable_lock lock(mtx);
+//            // printf("Update Locked. ");
+//            mAddressToClientMap[ inFromAddress ] = newClientProxy;
+//            mPlayerIdToClientMap[ newClientProxy->GetPlayerId() ] = newClientProxy;
+//
+//            // Here creates a client character in server.
+//            static_cast< Server* > ( AMMOPeer::sInstance.get() )->HandleNewClient( newClientProxy );
+//
+//            for( const auto& pair: mNetworkIdToGameObjectMap )
+//            {
+//                newClientProxy->GetReplicationManagerServer().ReplicateCreate( pair.first, pair.second->GetAllStateMask() );
+//            }
+//            // printf("Update Unlocked.\n");
+//        }
+//
+//        //and welcome the client...
+//        SendWelcomePacket( newClientProxy );
+//
+//    }
+//    else
+//    {
+//        //bad incoming packet from unknown client- we're under attack!!
+//        LOG( "Bad incoming packet: %d", packetType);
+//    }
+//}
+

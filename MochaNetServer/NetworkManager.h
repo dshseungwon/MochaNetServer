@@ -7,8 +7,17 @@ class NetworkManager
 public:
     static const uint32_t    kHelloCC = 'HELO';
     static const uint32_t    kWelcomeCC = 'WLCM';
-    static const uint32_t    kStateCC = 'STAT';
+    
+    static const uint32_t    kSignCC = 'SIUP';
+    static const uint32_t    kSignedCC = 'SDUP';
+    
+    static const uint32_t    kLogCC = 'LGIN';
+    static const uint32_t    kLoggedCC = 'LDIN';
+    
+    static const uint32_t    kFailedCC = 'FAIL';
+    
     static const uint32_t    kInputCC = 'INPT';
+    static const uint32_t    kStateCC = 'STAT';
     static const int        kMaxPacketsPerFrameCount = 10;
 
     NetworkManager();
