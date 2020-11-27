@@ -13,7 +13,8 @@ Server::Server()
     GameObjectRegistry::sInstance->RegisterCreationFunction( 'ARCH', ArcherCharacterServer::StaticCreate );
 
     DatabaseManager::StaticInit();
-
+    DatabaseManager::sInstance->ConnectToDB("127.0.0.1,5432@sqlapi", "postgres", "password");
+    
     // Pass 'true' to enable multi-threading
     InitNetworkManager(true);
     

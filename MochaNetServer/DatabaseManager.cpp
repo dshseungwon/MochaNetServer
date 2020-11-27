@@ -19,7 +19,7 @@ void DatabaseManager::ConnectToDB(std::string address, std::string id, std::stri
     try
     {
         mConnection.Connect(_TSA(address.c_str()), _TSA(id.c_str()), _TSA(passwd.c_str()), SA_PostgreSQL_Client);
-        printf("%s","Connected to the database.");
+        printf("%s","Connected to the database.\n");
     }
     catch(SAException &x)
     {
@@ -67,24 +67,24 @@ void DatabaseManager::DisconnectFromDB()
 
 void DatabaseManager::CreateUserRecord()
 {
-    SAConnection con;
     try
     {
-        con.Connect(_TSA("127.0.0.1,5432@sqlapi"), _TSA("postgres"), _TSA("password"), SA_PostgreSQL_Client);
-        LOG("%s","Connected to the database.");
-
-        // Create Table.
-        SACommand cmd;
-        cmd.setConnection(&con);
-        cmd.setCommandText("create table users(id SERIAL PRIMARY KEY, name VARCHAR(20), identification VARCHAR(20), password VARCHAR(20));");
-        cmd.Execute();
-
-        con.Disconnect();
-        LOG("%s","Disconnected from the database.");
+        if (mConnection.isConnected())
+        {
+            // Create Table.
+            SACommand cmd;
+            cmd.setConnection(&mConnection);
+            cmd.setCommandText("create table users(id SERIAL PRIMARY KEY, name VARCHAR(20), identification VARCHAR(20), password VARCHAR(20));");
+            cmd.Execute();
+        }
+        else
+        {
+            printf("Database is not connected.\n");
+        }
     }
     catch(SAException &x)
     {
-        con.Rollback();
+        mConnection.Rollback();
         printf("%s\n", x.ErrText().GetMultiByteChars());
     }
 }
@@ -94,40 +94,40 @@ DBAuthResult DatabaseManager::GetClientNameByLogInDB(std::string id, std::string
 {
     struct DBAuthResult ret;
     
-    SAConnection con;
     try
     {
-        con.Connect(_TSA("127.0.0.1,5432@sqlapi"), _TSA("postgres"), _TSA("password"), SA_PostgreSQL_Client);
-        LOG("%s","Connected to the database.");
-        
-        SACommand select(&con, _TSA("SELECT name FROM users WHERE identification = :1 and password = :2"));
-        select << _TSA(id.c_str()) << _TSA(pw.c_str());
-        select.Execute();
-        
-        // No user exists. Return errorcode.
-        if (select.FieldCount() == 0)
+        if (mConnection.isConnected())
         {
-            ret.resultCode = 2;
-            ret.name = "No user exists.";
+            SACommand select(&mConnection, _TSA("SELECT name FROM users WHERE identification = :1 and password = :2"));
+            select << _TSA(id.c_str()) << _TSA(pw.c_str());
+            select.Execute();
+            
+            // No user exists. Return errorcode.
+            if (select.FieldCount() == 0)
+            {
+                ret.resultCode = 2;
+                ret.name = "No user exists.";
+            }
+            
+            // User exists.
+            else
+            {
+                select.FetchFirst();
+                
+                SAString name = select[1].asString();
+                
+                ret.resultCode = 0;
+                ret.name = name.GetMultiByteChars();
+            }
         }
-        
-        // User exists.
         else
         {
-            select.FetchFirst();
-            
-            SAString name = select[1].asString();
-            
-            ret.resultCode = 0;
-            ret.name = name.GetMultiByteChars();
+            printf("Database is not connected.\n");
         }
-
-        con.Disconnect();
-        LOG("%s","Disconnected from the database.");
     }
     catch(SAException &x)
     {
-        con.Rollback();
+        mConnection.Rollback();
         printf("%s\n", x.ErrText().GetMultiByteChars());
         
         ret.resultCode = -1;
@@ -141,46 +141,44 @@ DBAuthResult DatabaseManager::GetClientNameBySignUpDB(std::string id, std::strin
 {
     struct DBAuthResult ret;
     
-    SAConnection con;
-    
     try
     {
-        con.Connect(_TSA("127.0.0.1,5432@sqlapi"), _TSA("postgres"), _TSA("password"), SA_PostgreSQL_Client);
-        LOG("%s","Connected to the database.");
-        
-        SACommand select(&con, _TSA("SELECT COUNT(*) FROM users WHERE identification = :1"));
-        select << _TSA(id.c_str());
-        select.Execute();
-        
-        select.FetchFirst();
-        long count = select[1].asLong();
-        
-        printf("count: %ld\n", count);
-
-        // User already exists. Return errorcode.
-        if (count > 0)
+        if (mConnection.isConnected())
         {
-            ret.resultCode = 1;
-            ret.name = "User Already Exists.";
+            SACommand select(&mConnection, _TSA("SELECT COUNT(*) FROM users WHERE identification = :1"));
+            select << _TSA(id.c_str());
+            select.Execute();
+            
+            select.FetchFirst();
+            long count = select[1].asLong();
+            
+            // User already exists. Return errorcode.
+            if (count > 0)
+            {
+                ret.resultCode = 1;
+                ret.name = "User Already Exists.";
+            }
+            
+            // It's Okay to do the signup.
+            else
+            {
+                SACommand signup(&mConnection, _TSA("INSERT INTO users (name, identification, password) VALUES (:1, :2, :3)"));
+                signup << _TSA(name.c_str()) << _TSA(id.c_str()) << _TSA(pw.c_str());
+                signup.Execute();
+                
+                ret.resultCode = 0;
+                ret.name = name;
+            }
         }
-        
-        // It's Okay to do the signup.
         else
         {
-            SACommand signup(&con, _TSA("INSERT INTO users (name, identification, password) VALUES (:1, :2, :3)"));
-            signup << _TSA(name.c_str()) << _TSA(id.c_str()) << _TSA(pw.c_str());
-            signup.Execute();
-            
-            ret.resultCode = 0;
-            ret.name = name;
+            printf("Database is not connected.\n");
+
         }
-        
-        con.Disconnect();
-        LOG("%s","Disconnected from the database.");
     }
     catch(SAException &x)
     {
-        con.Rollback();
+        mConnection.Rollback();
         printf("%s\n", x.ErrText().GetMultiByteChars());
         
         ret.resultCode = -1;
