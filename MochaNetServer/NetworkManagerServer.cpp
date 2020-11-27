@@ -159,6 +159,7 @@ void NetworkManagerServer::ProcessClientLogInPacket(InputMemoryBitStream &inInpu
     // Successfully found the user.
     if (authResult.resultCode == 0)
     {
+        printf("name: %s", authResult.name.c_str());
         ClientProxyPtr newClientProxy = std::make_shared< ClientProxy >( inFromAddress, authResult.name, mNewPlayerId++ );
         
         // code to update map
@@ -196,6 +197,7 @@ void NetworkManagerServer::SendLoggedInPacket( ClientProxyPtr inClientProxy )
 
     loggedInPacket.Write( kLoggedCC );
     loggedInPacket.Write( inClientProxy->GetPlayerId() );
+    loggedInPacket.Write( inClientProxy->GetName() );
 
     LOG( "[Log In] Server Welcoming, new client '%s' as player %d", inClientProxy->GetName().c_str(), inClientProxy->GetPlayerId() );
 
@@ -208,6 +210,7 @@ void NetworkManagerServer::SendSignedUpPacket( ClientProxyPtr inClientProxy )
 
     signedUpPacket.Write( kSignedCC );
     signedUpPacket.Write( inClientProxy->GetPlayerId() );
+    signedUpPacket.Write( inClientProxy->GetName() );
 
     LOG( "[Sign Up] Server Welcoming, new client '%s' as player %d", inClientProxy->GetName().c_str(), inClientProxy->GetPlayerId() );
 

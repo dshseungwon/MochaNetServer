@@ -102,22 +102,20 @@ DBAuthResult DatabaseManager::GetClientNameByLogInDB(std::string id, std::string
             select << _TSA(id.c_str()) << _TSA(pw.c_str());
             select.Execute();
             
-            // No user exists. Return errorcode.
-            if (select.FieldCount() == 0)
-            {
-                ret.resultCode = 2;
-                ret.name = "No user exists.";
-            }
-            
             // User exists.
-            else
+            if (select.FetchNext())
             {
-                select.FetchFirst();
-                
                 SAString name = select[1].asString();
                 
                 ret.resultCode = 0;
                 ret.name = name.GetMultiByteChars();
+            }
+            
+            // No user exists. Return errorcode.
+            else
+            {
+                ret.resultCode = 2;
+                ret.name = "No user exists.";
             }
         }
         else
