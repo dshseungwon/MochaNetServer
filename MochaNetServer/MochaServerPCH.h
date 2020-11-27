@@ -1,5 +1,6 @@
 #include "MMOShared.h"
 
+#include "SQLAPI.h"
 #include "DatabaseManager.h"
 
 #include "ReplicationManagerServer.h"

@@ -1,7 +1,4 @@
 #pragma once
-#include <string>
-#include <memory>
-#include "SQLAPI.h"
 
 struct DBAuthResult
 {
@@ -26,6 +23,12 @@ public:
     
     DBAuthResult GetClientNameBySignUpDB(std::string id, std::string pw, std::string name);
     
+    void CreateUserRecord();
+
+    void CreateFieldObjectRecord();
+    void PutRandomArchersToDatabse( int inNumber );
+    void CreateArchersFromDB();
+
 private:
     SAConnection mConnection;
     

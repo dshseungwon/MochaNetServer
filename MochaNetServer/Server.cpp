@@ -1,5 +1,4 @@
 #include "MochaServerPCH.h"
-#include "SQLAPI.h"
 
 bool Server::StaticInit()
 {
@@ -55,100 +54,6 @@ bool Server::InitNetworkManager(bool useMultiThreading, int numThreads)
 
 namespace
 {
-    void CreateFieldObjectRecord()
-    {
-        SAConnection con;
-        try {
-            con.Connect(_TSA("127.0.0.1,5432@sqlapi"), _TSA("postgres"), _TSA("password"), SA_PostgreSQL_Client);
-            LOG("%s","Connected to the database.");
-
-            // Create Table.
-            SACommand cmd;
-            cmd.setConnection(&con);
-            cmd.setCommandText("create table field_objects(id SERIAL PRIMARY KEY, type CHAR(4) NOT NULL, loc_x FLOAT, loc_y FLOAT, loc_z FLOAT, rot_x FLOAT, rot_y FLOAT, rot_z FLOAT);");
-            cmd.Execute();
-
-            con.Disconnect();
-            LOG("%s","Disconnected from the database.");
-        }
-        catch(SAException &x)
-        {
-            con.Rollback();
-            printf("%s\n", x.ErrText().GetMultiByteChars());
-        }
-    }
-
-    void PutRandomArchersToDatabse( int inNumber )
-    {
-        Vector3 minPos( -3000.f, -3000.f, 230.f );
-        Vector3 maxPos( 3000.f, 3000.f, 230.f );
-        
-        SAConnection con;
-               
-        try {
-            con.Connect(_TSA("127.0.0.1,5432@sqlapi"), _TSA("postgres"), _TSA("password"), SA_PostgreSQL_Client);
-            LOG("%s","Connected to the database.");
-
-            // Insert Data.
-            SACommand insert(&con, _TSA("INSERT INTO field_objects (type, loc_x, loc_y, loc_z) VALUES (:1, :2, :3, :4)"));
-
-
-            for( int i = 0; i < inNumber; ++i )
-            {
-              Vector3 archerLcation = MMOMath::GetRandomVector( minPos, maxPos );
-               insert << _TSA("ARCH") << archerLcation.mX << archerLcation.mY << archerLcation.mZ;
-               insert.Execute();
-            }
-            
-            con.Disconnect();
-            LOG("%s","Disconnected from the database.");
-        }
-        catch(SAException &x)
-        {
-            con.Rollback();
-            printf("%s\n", x.ErrText().GetMultiByteChars());
-        }
-    }
-    
-    void CreateArchersFromDB()
-    {
-        SAConnection con;
-               
-        try {
-            con.Connect(_TSA("127.0.0.1,5432@sqlapi"), _TSA("postgres"), _TSA("password"), SA_PostgreSQL_Client);
-            LOG("%s","Connected to the database.");
-            
-            SACommand select(&con, _TSA("SELECT id, type, loc_x, loc_y, loc_z FROM field_objects WHERE type = :1"));
-            select << _TSA("ARCH");
-            select.Execute();
-
-            while(select.FetchNext()) {
-                long id = select[1].asLong();
-                SAString type = select[2].asString();
-                double loc_x = select[3].asDouble();
-                double loc_y = select[4].asDouble();
-                double loc_z = select[5].asDouble();
-                
-                 printf("[%ld, %s] Location(%f, %f, %f) \n", id, type.GetMultiByteChars(), loc_x, loc_y, loc_z);
-                
-                Vector3 archerLocation;
-                archerLocation.Set(loc_x, loc_y, loc_z);
-                MochaObjectPtr go;
-                
-                go = GameObjectRegistry::sInstance->CreateGameObject( 'ARCH' );
-                go->SetLocation( archerLocation );
-            }
-            
-            con.Disconnect();
-            LOG("%s","Disconnected from the database.");
-        }
-        catch(SAException &x)
-        {
-            con.Rollback();
-            printf("%s\n", x.ErrText().GetMultiByteChars());
-        }
-    }
-
 //    void CreateRandomArcher( int inNumber )
 //    {
 //        Vector3 minPos( -1000.f, -1000.f, 230.f );
@@ -180,6 +85,8 @@ void Server::SetupWorld()
 //    CreateRandomArcher( 10 );
 
 //    CreateRandomArcher( 10 );
+    
+//    DatabaseManager::sInstance->CreateUserRecord();
 }
 
 void Server::Tick()
