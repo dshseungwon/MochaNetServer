@@ -13,7 +13,7 @@ Server::Server()
     GameObjectRegistry::sInstance->RegisterCreationFunction( 'ARCH', ArcherCharacterServer::StaticCreate );
 
     DatabaseManager::StaticInit();
-    DatabaseManager::sInstance->ConnectToDB("127.0.0.1,5432@sqlapi", "postgres", "password");
+    DatabaseManager::sInstance->ConnectToDB("127.0.0.1,5432@firstfantasy", "postgres", "LAUmac0117!");
     
     // Pass 'true' to enable multi-threading
     InitNetworkManager(true);
@@ -77,11 +77,13 @@ void Server::SetupWorld()
 {
 //    CreateRandomArcher( 10 );
     
-//    CreateFieldObjectRecord();
-//    PutRandomArchersToDatabse(50);
+//    DatabaseManager::sInstance->CreateFieldObjectRecord();
+//    DatabaseManager::sInstance->CreateUserRecord();
+//    DatabaseManager::sInstance->PutRandomArchersToDatabse(30);
+    
     DatabaseManager::sInstance->CreateArchersFromDB();
 
-//    DatabaseManager::sInstance->CreateUserRecord();
+
 }
 
 void Server::Tick()

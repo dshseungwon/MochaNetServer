@@ -40,8 +40,8 @@ void DatabaseManager::ConnectToDB(std::string address, std::string id, std::stri
     }
     catch(SAException &x)
     {
-        mConnection.Rollback();
         printf("%s\n", x.ErrText().GetMultiByteChars());
+        mConnection.Rollback();
     }
 }
 
@@ -225,7 +225,7 @@ void DatabaseManager::CreateFieldObjectRecord()
     SAConnection con;
     try
     {
-        con.Connect(_TSA("127.0.0.1,5432@sqlapi"), _TSA("postgres"), _TSA("password"), SA_PostgreSQL_Client);
+        con.Connect(_TSA("127.0.0.1,5432@firstfantasy"), _TSA("postgres"), _TSA("LAUmac0117!"), SA_PostgreSQL_Client);
         LOG("%s","Connected to the database.");
 
         // Create Table.
@@ -254,7 +254,7 @@ void DatabaseManager::PutRandomArchersToDatabse( int inNumber )
            
     try
     {
-        con.Connect(_TSA("127.0.0.1,5432@sqlapi"), _TSA("postgres"), _TSA("password"), SA_PostgreSQL_Client);
+        con.Connect(_TSA("127.0.0.1,5432@firstfantasy"), _TSA("postgres"), _TSA("LAUmac0117!"), SA_PostgreSQL_Client);
         LOG("%s","Connected to the database.");
 
         // Insert Data.
