@@ -370,6 +370,7 @@ void NetworkManagerServer::SendStatePacketToClient( ClientProxyPtr inClientProxy
         ifp->SetTransmissionData('RPLM', TransmissionDataPtr(rmtd));
     }
     
+    LOG("Bytelength of statePacket: %d\n",statePacket.GetByteLength());
     SendPacket( statePacket, inClientProxy->GetSocketAddress() );
     
 }

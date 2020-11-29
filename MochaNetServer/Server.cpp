@@ -79,7 +79,7 @@ void Server::SetupWorld()
     
 //    DatabaseManager::sInstance->CreateFieldObjectRecord();
 //    DatabaseManager::sInstance->CreateUserRecord();
-//    DatabaseManager::sInstance->PutRandomArchersToDatabse(30);
+//    DatabaseManager::sInstance->PutRandomArchersToDatabse(10);
     
     DatabaseManager::sInstance->CreateArchersFromDB();
 
