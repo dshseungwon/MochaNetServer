@@ -6,7 +6,7 @@ NetworkManagerServer::NetworkManagerServer() :
     mNewPlayerId( 1 ),
     mNewNetworkId( 1 ),
     mTimeBetweenStatePackets( 0.033f ),
-    mClientDisconnectTimeout( 30.f )
+    mClientDisconnectTimeout( 5.f )
 {
 }
 
@@ -375,7 +375,7 @@ void NetworkManagerServer::SendStatePacketToClient( ClientProxyPtr inClientProxy
         ifp->SetTransmissionData('RPLM', TransmissionDataPtr(rmtd));
     }
     
-    LOG("Bytelength of statePacket: %d",statePacket.GetByteLength());
+    // LOG("Bytelength of statePacket: %d",statePacket.GetByteLength());
     
     if (isFragmented)
     {
