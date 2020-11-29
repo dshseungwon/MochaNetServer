@@ -11,6 +11,7 @@ Server::Server()
 {
     GameObjectRegistry::sInstance->RegisterCreationFunction( 'PLYR', FirstFantasyCharacterServer::StaticCreate );
     GameObjectRegistry::sInstance->RegisterCreationFunction( 'ARCH', ArcherCharacterServer::StaticCreate );
+    GameObjectRegistry::sInstance->RegisterCreationFunction( 'SLIT', StreetlightServer::StaticCreate );
 
     DatabaseManager::StaticInit();
     DatabaseManager::sInstance->ConnectToDB("127.0.0.1,5432@firstfantasy", "postgres", "LAUmac0117!");
@@ -79,7 +80,7 @@ void Server::SetupWorld()
     
 //    DatabaseManager::sInstance->CreateFieldObjectRecord();
 //    DatabaseManager::sInstance->CreateUserRecord();
-    DatabaseManager::sInstance->PutRandomArchersToDatabse(30);
+//    DatabaseManager::sInstance->PutRandomArchersToDatabse(50);
     
     DatabaseManager::sInstance->CreateArchersFromDB();
 
@@ -113,7 +114,7 @@ void Server::SpawnPlayer( int inPlayerId )
 
     cat->SetPlayerId( inPlayerId );
 
-    cat->SetLocation( Vector3( 1.f - static_cast< float >( inPlayerId ), 0.f, 230.f ) );
+    cat->SetLocation( Vector3( 1.f - static_cast< float >( inPlayerId ), 0.f, 0.f ) );
 }
 
 void Server::HandleLostClient( ClientProxyPtr inClientProxy )

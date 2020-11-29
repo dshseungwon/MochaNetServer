@@ -6,7 +6,7 @@ NetworkManagerServer::NetworkManagerServer() :
     mNewPlayerId( 1 ),
     mNewNetworkId( 1 ),
     mTimeBetweenStatePackets( 0.033f ),
-    mClientDisconnectTimeout( 5.f )
+    mClientDisconnectTimeout( 30.f )
 {
 }
 

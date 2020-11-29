@@ -243,8 +243,8 @@ void DatabaseManager::CreateFieldObjectRecord()
 // Single Thread.
 void DatabaseManager::PutRandomArchersToDatabse( int inNumber )
 {
-    Vector3 minPos( -3000.f, -3000.f, 230.f );
-    Vector3 maxPos( 3000.f, 3000.f, 230.f );
+    Vector3 minPos( -3000.f, -3000.f, 0.f );
+    Vector3 maxPos( 3000.f, 3000.f, 0.f );
     
     SAConnection con;
            
@@ -298,7 +298,7 @@ void DatabaseManager::CreateArchersFromDB()
                 archerLocation.Set(loc_x, loc_y, loc_z);
                 MochaObjectPtr go;
                 
-                go = GameObjectRegistry::sInstance->CreateGameObject( 'ARCH' );
+                go = GameObjectRegistry::sInstance->CreateGameObject( 'SLIT' );
                 go->SetLocation( archerLocation );
             }
         }
