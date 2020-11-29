@@ -54,6 +54,12 @@ class GameObject;
 #include "MMOByteSwap.h"
 #include "MemoryBitStream.h"
 
+// HERE!
+#include "TransmissionData.h"
+#include "InFlightPacket.h"
+#include "AckRange.h"
+#include "DeliveryNotificationManager.h"
+
 #include "StringUtils.h"
 #include "SocketAddress.h"
 #include "SocketAddressFactory.h"

@@ -16,6 +16,9 @@
 		E300F38D256E8784005F3836 /* libsqlapi.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = E300F380256E871C005F3836 /* libsqlapi.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		E300F39125710112005F3836 /* DatabaseManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E300F38F25710112005F3836 /* DatabaseManager.cpp */; };
 		E316A29425690105000EBFFC /* ArcherCharacterServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E316A29225690105000EBFFC /* ArcherCharacterServer.cpp */; };
+		E35F3FE32573686200273AA8 /* DeliveryNotificationManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E35F3FE12573686200273AA8 /* DeliveryNotificationManager.cpp */; };
+		E35F3FE62573689E00273AA8 /* AckRange.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E35F3FE42573689E00273AA8 /* AckRange.cpp */; };
+		E35F3FE9257369B000273AA8 /* InFlightPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E35F3FE7257369B000273AA8 /* InFlightPacket.cpp */; };
 		E39A0B4525681392003F80FC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B4425681392003F80FC /* main.cpp */; };
 		E39A0B812568146D003F80FC /* SocketAddressFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B4D2568146B003F80FC /* SocketAddressFactory.cpp */; };
 		E39A0B822568146D003F80FC /* UDPSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B4F2568146B003F80FC /* UDPSocket.cpp */; };
@@ -78,6 +81,13 @@
 		E300F39025710112005F3836 /* DatabaseManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DatabaseManager.h; sourceTree = "<group>"; };
 		E316A29225690105000EBFFC /* ArcherCharacterServer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ArcherCharacterServer.cpp; sourceTree = "<group>"; };
 		E316A29325690105000EBFFC /* ArcherCharacterServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ArcherCharacterServer.h; sourceTree = "<group>"; };
+		E35F3FE12573686200273AA8 /* DeliveryNotificationManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DeliveryNotificationManager.cpp; sourceTree = "<group>"; };
+		E35F3FE22573686200273AA8 /* DeliveryNotificationManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeliveryNotificationManager.h; sourceTree = "<group>"; };
+		E35F3FE42573689E00273AA8 /* AckRange.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AckRange.cpp; sourceTree = "<group>"; };
+		E35F3FE52573689E00273AA8 /* AckRange.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AckRange.h; sourceTree = "<group>"; };
+		E35F3FE7257369B000273AA8 /* InFlightPacket.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = InFlightPacket.cpp; sourceTree = "<group>"; };
+		E35F3FE8257369B000273AA8 /* InFlightPacket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InFlightPacket.h; sourceTree = "<group>"; };
+		E35F3FEA25736B7900273AA8 /* TransmissionData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TransmissionData.h; sourceTree = "<group>"; };
 		E39A0B4125681392003F80FC /* MochaNetServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MochaNetServer; sourceTree = BUILT_PRODUCTS_DIR; };
 		E39A0B4425681392003F80FC /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		E39A0B4C2568146B003F80FC /* GameObjectRegistry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameObjectRegistry.h; sourceTree = "<group>"; };
@@ -239,6 +249,13 @@
 				E300F378256D2009005F3836 /* ThreadPool.h */,
 				E300F38F25710112005F3836 /* DatabaseManager.cpp */,
 				E300F39025710112005F3836 /* DatabaseManager.h */,
+				E35F3FE12573686200273AA8 /* DeliveryNotificationManager.cpp */,
+				E35F3FE22573686200273AA8 /* DeliveryNotificationManager.h */,
+				E35F3FE42573689E00273AA8 /* AckRange.cpp */,
+				E35F3FE52573689E00273AA8 /* AckRange.h */,
+				E35F3FE7257369B000273AA8 /* InFlightPacket.cpp */,
+				E35F3FE8257369B000273AA8 /* InFlightPacket.h */,
+				E35F3FEA25736B7900273AA8 /* TransmissionData.h */,
 			);
 			path = MochaNetServer;
 			sourceTree = "<group>";
@@ -317,8 +334,10 @@
 				E39A0B902568146D003F80FC /* MemoryBitStream.cpp in Sources */,
 				E39A0B882568146D003F80FC /* MMOInputState.cpp in Sources */,
 				E39A0B4525681392003F80FC /* main.cpp in Sources */,
+				E35F3FE32573686200273AA8 /* DeliveryNotificationManager.cpp in Sources */,
 				E39A0B962568146D003F80FC /* MoveList.cpp in Sources */,
 				E39A0BA2256817D9003F80FC /* ClientProxy.cpp in Sources */,
+				E35F3FE9257369B000273AA8 /* InFlightPacket.cpp in Sources */,
 				E39A0B822568146D003F80FC /* UDPSocket.cpp in Sources */,
 				E39A0BBC256823DC003F80FC /* FirstFantasyCharacterServer.cpp in Sources */,
 				E39A0B982568146D003F80FC /* SocketUtil.cpp in Sources */,
@@ -326,6 +345,7 @@
 				E39A0B952568146D003F80FC /* NetworkManager.cpp in Sources */,
 				E300F39125710112005F3836 /* DatabaseManager.cpp in Sources */,
 				E39A0B8D2568146D003F80FC /* MochaObject.cpp in Sources */,
+				E35F3FE62573689E00273AA8 /* AckRange.cpp in Sources */,
 				E39A0B842568146D003F80FC /* SocketAddress.cpp in Sources */,
 				E39A0B972568146D003F80FC /* TCPSocket.cpp in Sources */,
 			);
