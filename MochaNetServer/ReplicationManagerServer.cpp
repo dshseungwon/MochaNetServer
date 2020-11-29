@@ -21,7 +21,12 @@ void ReplicationManagerServer::SetStateDirty( int inNetworkId, uint32_t inDirtyS
     mNetworkIdToReplicationCommand[ inNetworkId ].AddDirtyState( inDirtyState );
 }
 
-void ReplicationManagerServer::Write( OutputMemoryBitStream& inOutputStream )
+void ReplicationManagerServer::HandleCreateAckd( int inNetworkId )
+{
+    mNetworkIdToReplicationCommand[ inNetworkId ].HandleCreateAckd();
+}
+
+void ReplicationManagerServer::Write( OutputMemoryBitStream& inOutputStream, ReplicationManagerTransmissionData* ioTransmissionData )
 {
     //run through each replication command and do something...
     for( auto& pair: mNetworkIdToReplicationCommand )
@@ -48,7 +53,7 @@ void ReplicationManagerServer::Write( OutputMemoryBitStream& inOutputStream )
                 writtenState = WriteCreateAction( inOutputStream, networkId, dirtyState );
                 //once the create action is transmitted, future replication
                 //of this object should be updates instead of creates
-                replicationCommand.SetAction( RA_Update );
+                // replicationCommand.SetAction( RA_Update );
                 break;
             case RA_Update:
                 writtenState = WriteUpdateAction( inOutputStream, networkId, dirtyState );
@@ -57,7 +62,7 @@ void ReplicationManagerServer::Write( OutputMemoryBitStream& inOutputStream )
                 //don't need anything other than state!
                 writtenState = WriteDestroyAction( inOutputStream, networkId, dirtyState );
                 //add this to the list of replication commands to remove
-                mNetworkIdsToRemove.emplace_back( networkId );
+                // mNetworkIdsToRemove.emplace_back( networkId );
                 break;
             case RA_RPC:
                 // Do Things for RPC Requests.
@@ -65,23 +70,25 @@ void ReplicationManagerServer::Write( OutputMemoryBitStream& inOutputStream )
             case RA_MAX:
                 break;
             }
-
+            
+            ioTransmissionData->AddTransmission(networkId, action, writtenState);
+            
             //let's pretend everything was written- don't make this too hard
             replicationCommand.ClearDirtyState( writtenState );
 
         }
     }
 
-    //remove replication commands for destroyed objects
-    if( !mNetworkIdsToRemove.empty() )
-    {
-        for( auto id : mNetworkIdsToRemove )
-        {
-            RemoveFromReplication( id );
-        }
-
-        mNetworkIdsToRemove.clear();
-    }
+//    //remove replication commands for destroyed objects
+//    if( !mNetworkIdsToRemove.empty() )
+//    {
+//        for( auto id : mNetworkIdsToRemove )
+//        {
+//            RemoveFromReplication( id );
+//        }
+//
+//        mNetworkIdsToRemove.clear();
+//    }
 }
 
 

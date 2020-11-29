@@ -8,9 +8,10 @@ public:
     void ReplicateCreate( int inNetworkId, uint32_t inInitialDirtyState );
     void ReplicateDestroy( int inNetworkId );
     void SetStateDirty( int inNetworkId, uint32_t inDirtyState );
+    void HandleCreateAckd( int inNetworkId );
     void RemoveFromReplication( int inNetworkId );
 
-    void Write( OutputMemoryBitStream& inOutputStream );
+    void Write( OutputMemoryBitStream& inOutputStream, ReplicationManagerTransmissionData* ioTransmissionData );
 
 private:
 

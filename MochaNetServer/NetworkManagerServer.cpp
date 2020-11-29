@@ -295,7 +295,12 @@ void NetworkManagerServer::ProcessPacket( ClientProxyPtr inClientProxy, InputMem
         SendLoggedInPacket ( inClientProxy );
         break;
     case kInputCC:
-        HandleInputPacket( inClientProxy, inInputStream );
+        {
+            updatable_lock lock(mtx);
+            printf("Update lock: ProcessPacket\n");
+            if ( inClientProxy->GetDeliveryNotificationManager().ReadAndProcessState(inInputStream) )
+                HandleInputPacket( inClientProxy, inInputStream );
+        }
         break;
     default:
         LOG( "Unknown packet type: %d", packetType);
@@ -320,6 +325,13 @@ void NetworkManagerServer::SendOutgoingPackets()
     for( auto it = mAddressToClientMap.begin(), end = mAddressToClientMap.end(); it != end; ++it )
     {
         ClientProxyPtr clientProxy = it->second;
+        
+        {
+            updatable_lock lock(mtx);
+            printf("Update Lock: SendOutgoingPackets\n");
+            clientProxy->GetDeliveryNotificationManager().ProcessTimedOutPackets();
+        }
+        
         if( clientProxy->IsLastMoveTimestampDirty() )
         {
             if (bMultiThreading)
@@ -344,12 +356,18 @@ void NetworkManagerServer::SendStatePacketToClient( ClientProxyPtr inClientProxy
     //it's state!
     statePacket.Write( kStateCC );
 
-    WriteLastMoveTimestampIfDirty( statePacket, inClientProxy );
-
     {
         updatable_lock lock(mtx);
         // printf("Update Lock: SendStatePacketToClient\n");
-        inClientProxy->GetReplicationManagerServer().Write( statePacket );
+        InFlightPacket* ifp = inClientProxy->GetDeliveryNotificationManager().WriteState(statePacket);
+        
+        WriteLastMoveTimestampIfDirty( statePacket, inClientProxy );
+        
+        ReplicationManagerTransmissionData* rmtd = new ReplicationManagerTransmissionData(&inClientProxy->GetReplicationManagerServer());
+        
+        inClientProxy->GetReplicationManagerServer().Write( statePacket, rmtd );
+        
+        ifp->SetTransmissionData('RPLM', TransmissionDataPtr(rmtd));
     }
     
     SendPacket( statePacket, inClientProxy->GetSocketAddress() );

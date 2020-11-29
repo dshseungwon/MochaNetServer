@@ -13,6 +13,8 @@ public:
             void            UpdateLastPacketTime();
             float            GetLastPacketFromClientTime()    const    { return mLastPacketFromClientTime; }
 
+    DeliveryNotificationManager&    GetDeliveryNotificationManager()    { return mDeliveryNotificationManager; }
+    
             ReplicationManagerServer&        GetReplicationManagerServer()        { return mReplicationManagerServer; }
 
             const    MoveList&                GetUnprocessedMoveList() const        { return mUnprocessedMoveList; }
@@ -26,6 +28,7 @@ public:
 
 private:
 
+    DeliveryNotificationManager    mDeliveryNotificationManager;
     ReplicationManagerServer    mReplicationManagerServer;
 
     SocketAddress    mSocketAddress;

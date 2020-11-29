@@ -2,6 +2,7 @@
 
 #include "SQLAPI.h"
 #include "DatabaseManager.h"
+#include "ReplicationManagerTransmissionData.h"
 
 #include "ReplicationManagerServer.h"
 

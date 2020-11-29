@@ -19,6 +19,7 @@
 		E35F3FE32573686200273AA8 /* DeliveryNotificationManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E35F3FE12573686200273AA8 /* DeliveryNotificationManager.cpp */; };
 		E35F3FE62573689E00273AA8 /* AckRange.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E35F3FE42573689E00273AA8 /* AckRange.cpp */; };
 		E35F3FE9257369B000273AA8 /* InFlightPacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E35F3FE7257369B000273AA8 /* InFlightPacket.cpp */; };
+		E35F3FF0257373DD00273AA8 /* ReplicationManagerTransmissionData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E35F3FEE257373DD00273AA8 /* ReplicationManagerTransmissionData.cpp */; };
 		E39A0B4525681392003F80FC /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B4425681392003F80FC /* main.cpp */; };
 		E39A0B812568146D003F80FC /* SocketAddressFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B4D2568146B003F80FC /* SocketAddressFactory.cpp */; };
 		E39A0B822568146D003F80FC /* UDPSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0B4F2568146B003F80FC /* UDPSocket.cpp */; };
@@ -88,6 +89,8 @@
 		E35F3FE7257369B000273AA8 /* InFlightPacket.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = InFlightPacket.cpp; sourceTree = "<group>"; };
 		E35F3FE8257369B000273AA8 /* InFlightPacket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InFlightPacket.h; sourceTree = "<group>"; };
 		E35F3FEA25736B7900273AA8 /* TransmissionData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TransmissionData.h; sourceTree = "<group>"; };
+		E35F3FEE257373DD00273AA8 /* ReplicationManagerTransmissionData.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ReplicationManagerTransmissionData.cpp; sourceTree = "<group>"; };
+		E35F3FEF257373DD00273AA8 /* ReplicationManagerTransmissionData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReplicationManagerTransmissionData.h; sourceTree = "<group>"; };
 		E39A0B4125681392003F80FC /* MochaNetServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MochaNetServer; sourceTree = BUILT_PRODUCTS_DIR; };
 		E39A0B4425681392003F80FC /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		E39A0B4C2568146B003F80FC /* GameObjectRegistry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameObjectRegistry.h; sourceTree = "<group>"; };
@@ -256,6 +259,8 @@
 				E35F3FE7257369B000273AA8 /* InFlightPacket.cpp */,
 				E35F3FE8257369B000273AA8 /* InFlightPacket.h */,
 				E35F3FEA25736B7900273AA8 /* TransmissionData.h */,
+				E35F3FEE257373DD00273AA8 /* ReplicationManagerTransmissionData.cpp */,
+				E35F3FEF257373DD00273AA8 /* ReplicationManagerTransmissionData.h */,
 			);
 			path = MochaNetServer;
 			sourceTree = "<group>";
@@ -333,6 +338,7 @@
 				E39A0B942568146D003F80FC /* MMOPCH.cpp in Sources */,
 				E39A0B902568146D003F80FC /* MemoryBitStream.cpp in Sources */,
 				E39A0B882568146D003F80FC /* MMOInputState.cpp in Sources */,
+				E35F3FF0257373DD00273AA8 /* ReplicationManagerTransmissionData.cpp in Sources */,
 				E39A0B4525681392003F80FC /* main.cpp in Sources */,
 				E35F3FE32573686200273AA8 /* DeliveryNotificationManager.cpp in Sources */,
 				E39A0B962568146D003F80FC /* MoveList.cpp in Sources */,
