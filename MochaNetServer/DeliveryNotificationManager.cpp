@@ -21,9 +21,12 @@ mDispatchedPacketCount( 0 )
 //we're going away- log how well we did...
 DeliveryNotificationManager::~DeliveryNotificationManager()
 {
-    LOG( "Delivery rate %d%%, Drop rate %d%%",
-        ( 100 * mDeliveredPacketCount ) / mDispatchedPacketCount,
-        ( 100 * mDroppedPacketCount ) / mDispatchedPacketCount );
+    if (mDispatchedPacketCount >= 1)
+    {
+        LOG( "Delivery rate %d%%, Drop rate %d%%",
+            ( 100 * mDeliveredPacketCount ) / mDispatchedPacketCount,
+            ( 100 * mDroppedPacketCount ) / mDispatchedPacketCount );
+    }
 }
 
 

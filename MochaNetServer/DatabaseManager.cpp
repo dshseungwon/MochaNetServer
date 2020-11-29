@@ -112,19 +112,17 @@ void DatabaseManager::CreateUserRecord()
 // Multi-thread.
 DBAuthResult DatabaseManager::GetClientNameByLogInDB(std::string id, std::string pw)
 {
+    updatable_lock lock(mtx);
     struct DBAuthResult ret;
-    
-    SAConnection newConnection;
-    
+        
     try
     {
-//        if (mConnection.isConnected())
-//        {
+        if (mConnection.isConnected())
+        {
+//            newConnection.Connect(_TSA(mDBAddress.c_str()), _TSA(mDBId.c_str()), _TSA(mDBPasswd.c_str()), SA_PostgreSQL_Client);
+//            printf("%s","(LOG IN) Connected to the database.\n");
             
-            newConnection.Connect(_TSA(mDBAddress.c_str()), _TSA(mDBId.c_str()), _TSA(mDBPasswd.c_str()), SA_PostgreSQL_Client);
-            printf("%s","(LOG IN) Connected to the database.\n");
-            
-            SACommand select(&newConnection, _TSA("SELECT name FROM users WHERE identification = :1 and password = :2"));
+            SACommand select(&mConnection, _TSA("SELECT name FROM users WHERE identification = :1 and password = :2"));
             select << _TSA(id.c_str()) << _TSA(pw.c_str());
             select.Execute();
             
@@ -144,16 +142,15 @@ DBAuthResult DatabaseManager::GetClientNameByLogInDB(std::string id, std::string
                 ret.name = "No user exists.";
             }
         
-            newConnection.Disconnect();
-//        }
-//        else
-//        {
-//            printf("Database is not connected.\n");
-//        }
+        }
+        else
+        {
+            printf("Database is not connected.\n");
+        }
     }
     catch(SAException &x)
     {
-        newConnection.Rollback();
+        mConnection.Rollback();
         printf("%s\n", x.ErrText().GetMultiByteChars());
         
         ret.resultCode = -1;
@@ -165,18 +162,17 @@ DBAuthResult DatabaseManager::GetClientNameByLogInDB(std::string id, std::string
 // Multi-thread.
 DBAuthResult DatabaseManager::GetClientNameBySignUpDB(std::string id, std::string pw, std::string name)
 {
+    updatable_lock lock(mtx);
     struct DBAuthResult ret;
-    
-    SAConnection newConnection;
 
     try
     {
-//        if (mConnection.isConnected())
-//        {
-            newConnection.Connect(_TSA(mDBAddress.c_str()), _TSA(mDBId.c_str()), _TSA(mDBPasswd.c_str()), SA_PostgreSQL_Client);
-            printf("%s","(SIGN UP) Connected to the database.\n");
+        if (mConnection.isConnected())
+        {
+//            newConnection.Connect(_TSA(mDBAddress.c_str()), _TSA(mDBId.c_str()), _TSA(mDBPasswd.c_str()), SA_PostgreSQL_Client);
+//            printf("%s","(SIGN UP) Connected to the database.\n");
         
-            SACommand select(&newConnection, _TSA("SELECT COUNT(*) FROM users WHERE identification = :1"));
+            SACommand select(&mConnection, _TSA("SELECT COUNT(*) FROM users WHERE identification = :1"));
             select << _TSA(id.c_str());
             select.Execute();
             
@@ -193,23 +189,23 @@ DBAuthResult DatabaseManager::GetClientNameBySignUpDB(std::string id, std::strin
             // It's Okay to do the signup.
             else
             {
-                SACommand signup(&newConnection, _TSA("INSERT INTO users (name, identification, password) VALUES (:1, :2, :3)"));
+                SACommand signup(&mConnection, _TSA("INSERT INTO users (name, identification, password) VALUES (:1, :2, :3)"));
                 signup << _TSA(name.c_str()) << _TSA(id.c_str()) << _TSA(pw.c_str());
                 signup.Execute();
                 
                 ret.resultCode = 0;
                 ret.name = name;
             }
-//        }
-//        else
-//        {
-//            printf("Database is not connected.\n");
-//
-//        }
+        }
+        else
+        {
+            printf("Database is not connected.\n");
+
+        }
     }
     catch(SAException &x)
     {
-        newConnection.Rollback();
+        mConnection.Rollback();
         printf("%s\n", x.ErrText().GetMultiByteChars());
         
         ret.resultCode = -1;

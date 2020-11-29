@@ -26,7 +26,7 @@ void ReplicationManagerServer::HandleCreateAckd( int inNetworkId )
     mNetworkIdToReplicationCommand[ inNetworkId ].HandleCreateAckd();
 }
 
-void ReplicationManagerServer::Write( OutputMemoryBitStream& inOutputStream, ReplicationManagerTransmissionData* ioTransmissionData )
+bool ReplicationManagerServer::Write( OutputMemoryBitStream& inOutputStream, ReplicationManagerTransmissionData* ioTransmissionData, OutputMemoryBitStream& fragPacket )
 {
     //run through each replication command and do something...
     for( auto& pair: mNetworkIdToReplicationCommand )
@@ -34,6 +34,9 @@ void ReplicationManagerServer::Write( OutputMemoryBitStream& inOutputStream, Rep
         ReplicationCommand& replicationCommand = pair.second;
         if( replicationCommand.HasDirtyState() )
         {
+            // Shallow copy the stream before adding new information to the stream.
+            fragPacket = inOutputStream;
+            
             int networkId = pair.first;
 
             //well, first write the network id...
@@ -71,6 +74,12 @@ void ReplicationManagerServer::Write( OutputMemoryBitStream& inOutputStream, Rep
                 break;
             }
             
+            // Do not send over 1000 bytes per packet.
+            if (inOutputStream.GetByteLength() >= 1500)
+            {
+                return true;
+            }
+            
             ioTransmissionData->AddTransmission(networkId, action, writtenState);
             
             //let's pretend everything was written- don't make this too hard
@@ -89,6 +98,8 @@ void ReplicationManagerServer::Write( OutputMemoryBitStream& inOutputStream, Rep
 //
 //        mNetworkIdsToRemove.clear();
 //    }
+    
+    return false;
 }
 
 

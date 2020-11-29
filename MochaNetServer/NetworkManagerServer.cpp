@@ -353,8 +353,13 @@ void NetworkManagerServer::SendStatePacketToClient( ClientProxyPtr inClientProxy
     //build state packet
     OutputMemoryBitStream    statePacket;
 
+    // Fragment packet used when the size of statepacket is over 1500
+    OutputMemoryBitStream   fragPacket(true);
+    
     //it's state!
     statePacket.Write( kStateCC );
+    
+    bool isFragmented;
 
     {
         updatable_lock lock(mtx);
@@ -365,13 +370,21 @@ void NetworkManagerServer::SendStatePacketToClient( ClientProxyPtr inClientProxy
         
         ReplicationManagerTransmissionData* rmtd = new ReplicationManagerTransmissionData(&inClientProxy->GetReplicationManagerServer());
         
-        inClientProxy->GetReplicationManagerServer().Write( statePacket, rmtd );
+        isFragmented = inClientProxy->GetReplicationManagerServer().Write( statePacket, rmtd, fragPacket );
         
         ifp->SetTransmissionData('RPLM', TransmissionDataPtr(rmtd));
     }
     
-    LOG("Bytelength of statePacket: %d\n",statePacket.GetByteLength());
-    SendPacket( statePacket, inClientProxy->GetSocketAddress() );
+    LOG("Bytelength of statePacket: %d",statePacket.GetByteLength());
+    
+    if (isFragmented)
+    {
+        SendPacket( fragPacket, inClientProxy->GetSocketAddress() );
+    }
+    else
+    {
+        SendPacket( statePacket, inClientProxy->GetSocketAddress() );
+    }
     
 }
 

@@ -11,7 +11,7 @@ public:
     void HandleCreateAckd( int inNetworkId );
     void RemoveFromReplication( int inNetworkId );
 
-    void Write( OutputMemoryBitStream& inOutputStream, ReplicationManagerTransmissionData* ioTransmissionData );
+    bool Write( OutputMemoryBitStream& inOutputStream, ReplicationManagerTransmissionData* ioTransmissionData, OutputMemoryBitStream& fragPacket );
 
 private:
 
@@ -22,5 +22,5 @@ private:
     unordered_map< int, ReplicationCommand >    mNetworkIdToReplicationCommand;
     vector< int >                                mNetworkIdsToRemove;
 
-
+    uint32_t                    mMaximumSerlizableBytes = 500;
 };

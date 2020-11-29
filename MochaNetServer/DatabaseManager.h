@@ -37,4 +37,6 @@ private:
     std::string mDBAddress;
     std::string mDBId;
     std::string mDBPasswd;
+    
+    mutex_type mtx;
 };
