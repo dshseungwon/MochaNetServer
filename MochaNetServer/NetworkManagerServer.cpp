@@ -297,7 +297,7 @@ void NetworkManagerServer::ProcessPacket( ClientProxyPtr inClientProxy, InputMem
     case kInputCC:
         {
             updatable_lock lock(mtx);
-            printf("Update lock: ProcessPacket\n");
+            // printf("Update Lock: ProcessPacket\n");
             if ( inClientProxy->GetDeliveryNotificationManager().ReadAndProcessState(inInputStream) )
                 HandleInputPacket( inClientProxy, inInputStream );
         }
@@ -328,7 +328,7 @@ void NetworkManagerServer::SendOutgoingPackets()
         
         {
             updatable_lock lock(mtx);
-            printf("Update Lock: SendOutgoingPackets\n");
+            // printf("Update Lock: SendOutgoingPackets\n");
             clientProxy->GetDeliveryNotificationManager().ProcessTimedOutPackets();
         }
         
