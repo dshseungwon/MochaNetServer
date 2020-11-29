@@ -14,12 +14,29 @@ void DatabaseManager::StaticInit()
     sInstance.reset ( new DatabaseManager() );
 }
 
+DatabaseManager::DatabaseManager() :
+    mDBAddress(""),
+    mDBId(""),
+    mDBPasswd("")
+{
+}
+
+DatabaseManager::~DatabaseManager()
+{
+    DisconnectFromDB();
+}
+
+// Single thread.
 void DatabaseManager::ConnectToDB(std::string address, std::string id, std::string passwd)
 {
     try
     {
         mConnection.Connect(_TSA(address.c_str()), _TSA(id.c_str()), _TSA(passwd.c_str()), SA_PostgreSQL_Client);
         printf("%s","Connected to the database.\n");
+        
+        mDBAddress = address;
+        mDBId = id;
+        mDBPasswd = passwd;
     }
     catch(SAException &x)
     {
@@ -28,6 +45,7 @@ void DatabaseManager::ConnectToDB(std::string address, std::string id, std::stri
     }
 }
 
+// Single thread.
 void DatabaseManager::ExecuteCommand(std::string command)
 {
     try
@@ -44,6 +62,7 @@ void DatabaseManager::ExecuteCommand(std::string command)
     }
 }
 
+// Single thread.
 void DatabaseManager::DisconnectFromDB()
 {
     try
@@ -65,6 +84,7 @@ void DatabaseManager::DisconnectFromDB()
     }
 }
 
+// Single thread.
 void DatabaseManager::CreateUserRecord()
 {
     try
@@ -89,16 +109,22 @@ void DatabaseManager::CreateUserRecord()
     }
 }
 
-
+// Multi-thread.
 DBAuthResult DatabaseManager::GetClientNameByLogInDB(std::string id, std::string pw)
 {
     struct DBAuthResult ret;
     
+    SAConnection newConnection;
+    
     try
     {
-        if (mConnection.isConnected())
-        {
-            SACommand select(&mConnection, _TSA("SELECT name FROM users WHERE identification = :1 and password = :2"));
+//        if (mConnection.isConnected())
+//        {
+            
+            newConnection.Connect(_TSA(mDBAddress.c_str()), _TSA(mDBId.c_str()), _TSA(mDBPasswd.c_str()), SA_PostgreSQL_Client);
+            printf("%s","(LOG IN) Connected to the database.\n");
+            
+            SACommand select(&newConnection, _TSA("SELECT name FROM users WHERE identification = :1 and password = :2"));
             select << _TSA(id.c_str()) << _TSA(pw.c_str());
             select.Execute();
             
@@ -117,15 +143,17 @@ DBAuthResult DatabaseManager::GetClientNameByLogInDB(std::string id, std::string
                 ret.resultCode = 2;
                 ret.name = "No user exists.";
             }
-        }
-        else
-        {
-            printf("Database is not connected.\n");
-        }
+        
+            newConnection.Disconnect();
+//        }
+//        else
+//        {
+//            printf("Database is not connected.\n");
+//        }
     }
     catch(SAException &x)
     {
-        mConnection.Rollback();
+        newConnection.Rollback();
         printf("%s\n", x.ErrText().GetMultiByteChars());
         
         ret.resultCode = -1;
@@ -134,16 +162,21 @@ DBAuthResult DatabaseManager::GetClientNameByLogInDB(std::string id, std::string
     return ret;
 }
 
-
+// Multi-thread.
 DBAuthResult DatabaseManager::GetClientNameBySignUpDB(std::string id, std::string pw, std::string name)
 {
     struct DBAuthResult ret;
     
+    SAConnection newConnection;
+
     try
     {
-        if (mConnection.isConnected())
-        {
-            SACommand select(&mConnection, _TSA("SELECT COUNT(*) FROM users WHERE identification = :1"));
+//        if (mConnection.isConnected())
+//        {
+            newConnection.Connect(_TSA(mDBAddress.c_str()), _TSA(mDBId.c_str()), _TSA(mDBPasswd.c_str()), SA_PostgreSQL_Client);
+            printf("%s","(SIGN UP) Connected to the database.\n");
+        
+            SACommand select(&newConnection, _TSA("SELECT COUNT(*) FROM users WHERE identification = :1"));
             select << _TSA(id.c_str());
             select.Execute();
             
@@ -160,23 +193,23 @@ DBAuthResult DatabaseManager::GetClientNameBySignUpDB(std::string id, std::strin
             // It's Okay to do the signup.
             else
             {
-                SACommand signup(&mConnection, _TSA("INSERT INTO users (name, identification, password) VALUES (:1, :2, :3)"));
+                SACommand signup(&newConnection, _TSA("INSERT INTO users (name, identification, password) VALUES (:1, :2, :3)"));
                 signup << _TSA(name.c_str()) << _TSA(id.c_str()) << _TSA(pw.c_str());
                 signup.Execute();
                 
                 ret.resultCode = 0;
                 ret.name = name;
             }
-        }
-        else
-        {
-            printf("Database is not connected.\n");
-
-        }
+//        }
+//        else
+//        {
+//            printf("Database is not connected.\n");
+//
+//        }
     }
     catch(SAException &x)
     {
-        mConnection.Rollback();
+        newConnection.Rollback();
         printf("%s\n", x.ErrText().GetMultiByteChars());
         
         ret.resultCode = -1;
@@ -186,6 +219,7 @@ DBAuthResult DatabaseManager::GetClientNameBySignUpDB(std::string id, std::strin
     return ret;
 }
 
+// Single Thread.
 void DatabaseManager::CreateFieldObjectRecord()
 {
     SAConnection con;
@@ -210,6 +244,7 @@ void DatabaseManager::CreateFieldObjectRecord()
     }
 }
 
+// Single Thread.
 void DatabaseManager::PutRandomArchersToDatabse( int inNumber )
 {
     Vector3 minPos( -3000.f, -3000.f, 230.f );
@@ -243,42 +278,42 @@ void DatabaseManager::PutRandomArchersToDatabse( int inNumber )
     }
 }
 
+// Single Thread.
 void DatabaseManager::CreateArchersFromDB()
 {
-    SAConnection con;
-           
     try
     {
-        con.Connect(_TSA("127.0.0.1,5432@sqlapi"), _TSA("postgres"), _TSA("password"), SA_PostgreSQL_Client);
-        LOG("%s","Connected to the database.");
-        
-        SACommand select(&con, _TSA("SELECT id, type, loc_x, loc_y, loc_z FROM field_objects WHERE type = :1"));
-        select << _TSA("ARCH");
-        select.Execute();
+        if (mConnection.isConnected())
+        {
+            SACommand select(&mConnection, _TSA("SELECT id, type, loc_x, loc_y, loc_z FROM field_objects WHERE type = :1"));
+            select << _TSA("ARCH");
+            select.Execute();
 
-        while(select.FetchNext()) {
-            long id = select[1].asLong();
-            SAString type = select[2].asString();
-            double loc_x = select[3].asDouble();
-            double loc_y = select[4].asDouble();
-            double loc_z = select[5].asDouble();
-            
-             printf("[%ld, %s] Location(%f, %f, %f) \n", id, type.GetMultiByteChars(), loc_x, loc_y, loc_z);
-            
-            Vector3 archerLocation;
-            archerLocation.Set(loc_x, loc_y, loc_z);
-            MochaObjectPtr go;
-            
-            go = GameObjectRegistry::sInstance->CreateGameObject( 'ARCH' );
-            go->SetLocation( archerLocation );
+            while(select.FetchNext()) {
+                long id = select[1].asLong();
+                SAString type = select[2].asString();
+                double loc_x = select[3].asDouble();
+                double loc_y = select[4].asDouble();
+                double loc_z = select[5].asDouble();
+                
+                 printf("[%ld, %s] Location(%f, %f, %f) \n", id, type.GetMultiByteChars(), loc_x, loc_y, loc_z);
+                
+                Vector3 archerLocation;
+                archerLocation.Set(loc_x, loc_y, loc_z);
+                MochaObjectPtr go;
+                
+                go = GameObjectRegistry::sInstance->CreateGameObject( 'ARCH' );
+                go->SetLocation( archerLocation );
+            }
         }
-        
-        con.Disconnect();
-        LOG("%s","Disconnected from the database.");
+        else
+        {
+            printf("Database is not connected.\n");
+        }
     }
     catch(SAException &x)
     {
-        con.Rollback();
+        mConnection.Rollback();
         printf("%s\n", x.ErrText().GetMultiByteChars());
     }
 }

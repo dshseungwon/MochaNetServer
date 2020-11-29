@@ -92,10 +92,13 @@ inline MochaObjectPtr NetworkManagerServer::GetGameObject( int inNetworkId )
 {
     IntToGameObjectMap::const_iterator gameObjectIt;
     
-    {
-        read_only_lock lock(mtx);
+    // We Do not LOCK in here.
+    // As we already have locked @SendStatePacketToClient
+    
+//    {
+//        read_only_lock lock(mtx);
         gameObjectIt = mNetworkIdToGameObjectMap.find( inNetworkId );
-    }
+//    }
 
     if( gameObjectIt != mNetworkIdToGameObjectMap.end() )
     {

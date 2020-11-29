@@ -10,6 +10,8 @@ class DatabaseManager
 {
 public:
     static void StaticInit();
+    DatabaseManager();
+    ~DatabaseManager();
 
     static std::unique_ptr< DatabaseManager >        sInstance;
     
@@ -32,4 +34,7 @@ public:
 private:
     SAConnection mConnection;
     
+    std::string mDBAddress;
+    std::string mDBId;
+    std::string mDBPasswd;
 };

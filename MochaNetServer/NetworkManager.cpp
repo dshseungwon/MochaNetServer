@@ -152,11 +152,6 @@ void NetworkManager::ProcessQueuedPackets()
         
         if( Timing::sInstance.GetTimef() >= nextPacket.GetReceivedTime() )
         {
-            //LOG("%s", "Packet Received!");
-
-            // LOG("inputStream 0: %p", &nextPacket.GetPacketBuffer());
-            
-            
             char* packetMem = nextPacket.GetPacketMem();
             InputMemoryBitStream& packetBuffer = nextPacket.GetPacketBuffer();
             const SocketAddress& sockAddr = nextPacket.GetFromAddress();

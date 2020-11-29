@@ -346,7 +346,12 @@ void NetworkManagerServer::SendStatePacketToClient( ClientProxyPtr inClientProxy
 
     WriteLastMoveTimestampIfDirty( statePacket, inClientProxy );
 
-    inClientProxy->GetReplicationManagerServer().Write( statePacket );
+    {
+        updatable_lock lock(mtx);
+        // printf("Update Lock: SendStatePacketToClient\n");
+        inClientProxy->GetReplicationManagerServer().Write( statePacket );
+    }
+    
     SendPacket( statePacket, inClientProxy->GetSocketAddress() );
     
 }

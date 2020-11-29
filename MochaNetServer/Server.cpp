@@ -75,18 +75,12 @@ namespace
 
 void Server::SetupWorld()
 {
+//    CreateRandomArcher( 10 );
+    
 //    CreateFieldObjectRecord();
 //    PutRandomArchersToDatabse(50);
-    
-    // There exists an error where number of object exceeds certain number,
-    // which occurs at client side.
-    
-//    CreateArchersFromDB();
-    
-//    CreateRandomArcher( 10 );
+    DatabaseManager::sInstance->CreateArchersFromDB();
 
-//    CreateRandomArcher( 10 );
-    
 //    DatabaseManager::sInstance->CreateUserRecord();
 }
 
