@@ -154,6 +154,16 @@ uint32_t FirstFantasyCharacterServer::Write( OutputMemoryBitStream& inOutputStre
     {
         inOutputStream.Write( false );
     }
+    
+    if( mThrustDirRight != 0.f )
+    {
+        inOutputStream.Write( true );
+        inOutputStream.Write( mThrustDirRight > 0.f );
+    }
+    else
+    {
+        inOutputStream.Write( false );
+    }
 
     if( inDirtyState & ECRS_Color )
     {
