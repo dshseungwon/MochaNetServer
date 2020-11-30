@@ -10,7 +10,7 @@ mSocketAddress( inSocketAddress ),
 mName( inName ),
 mPlayerId( inPlayerId ),
 mDeliveryNotificationManager(false, true),
-mIsLastMoveTimestampDirty( false ),
+mIsLastMoveTimestampDirty( true ),
 mTimeToRespawn( 0.f )
 {
     UpdateLastPacketTime();
