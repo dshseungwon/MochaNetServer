@@ -12,7 +12,9 @@ Server::Server()
     GameObjectRegistry::sInstance->RegisterCreationFunction( 'PLYR', FirstFantasyCharacterServer::StaticCreate );
     GameObjectRegistry::sInstance->RegisterCreationFunction( 'ARCH', ArcherCharacterServer::StaticCreate );
     GameObjectRegistry::sInstance->RegisterCreationFunction( 'SLIT', StreetlightServer::StaticCreate );
+    GameObjectRegistry::sInstance->RegisterCreationFunction( 'EXPR', ExplosionRPCServer::StaticCreate );
 
+    
     DatabaseManager::StaticInit();
     DatabaseManager::sInstance->ConnectToDB("127.0.0.1,5432@firstfantasy", "postgres", "LAUmac0117!");
     

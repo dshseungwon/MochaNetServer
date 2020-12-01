@@ -528,6 +528,26 @@ void NetworkManagerServer::RegisterGameObject( MochaObjectPtr inGameObject )
     
 }
 
+void NetworkManagerServer::RegisterRPC( MochaObjectPtr inGameObject )
+{
+    //assign network id
+    int newNetworkId = GetNewNetworkId();
+    inGameObject->SetNetworkId( newNetworkId );
+
+
+    // We Do not LOCK in here.
+    // As we already have locked @handlePacketFromNewClient
+    
+        //add mapping from network id to game object
+        mNetworkIdToGameObjectMap[ newNetworkId ] = inGameObject;
+
+        //tell all client proxies this is new...
+        for( const auto& pair: mAddressToClientMap )
+        {
+            pair.second->GetReplicationManagerServer().ReplicateRPC( newNetworkId, inGameObject->GetAllStateMask() );
+        }
+    
+}
 
 void NetworkManagerServer::UnregisterGameObject( IMochaObject* inGameObject )
 {
@@ -544,6 +564,26 @@ void NetworkManagerServer::UnregisterGameObject( IMochaObject* inGameObject )
     for( const auto& pair: mAddressToClientMap )
     {
         pair.second->GetReplicationManagerServer().ReplicateDestroy( networkId );
+    }
+    
+//    printf("Update Unlocked: UNREGISTER GAMEOBJECT");
+}
+
+void NetworkManagerServer::UnregisterRPC( IMochaObject* inGameObject )
+{
+    printf("Update Lock: UnregisterRPC\n");
+    updatable_lock lock(mtx);
+//    printf("Update Locked: UNREGISTER GAMEOBJECT");
+    
+    int networkId = inGameObject->GetNetworkId();
+
+    mNetworkIdToGameObjectMap.erase( networkId );
+
+    //tell all client proxies to STOP replicating!
+    //tell all client proxies this is new...
+    for( const auto& pair: mAddressToClientMap )
+    {
+        pair.second->GetReplicationManagerServer().RemoveFromReplication(networkId);
     }
     
 //    printf("Update Unlocked: UNREGISTER GAMEOBJECT");

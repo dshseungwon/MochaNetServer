@@ -15,6 +15,7 @@ using updatable_lock = std::unique_lock<mutex_type>;
 #include "FirstFantasyCharacterServer.h"
 #include "ArcherCharacterServer.h"
 #include "StreetlightServer.h"
+#include "ExplosionRPCServer.h"
 
 #include "Server.h"
 

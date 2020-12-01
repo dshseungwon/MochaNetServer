@@ -16,6 +16,17 @@ public:
     
     ReplicationCommand() {}
     ReplicationCommand( uint32_t inInitialDirtyState ) : mAction( RA_Create ), mDirtyState( inInitialDirtyState ) {}
+    ReplicationCommand( bool isRPC, uint32_t inInitialDirtyState ) : mDirtyState(inInitialDirtyState)
+    {
+        if (isRPC)
+        {
+            mAction = RA_RPC;
+        }
+        else
+        {
+            mAction = RA_Create;
+        }
+    }
     
     //if the create is ack'd, we can demote to just an update...
     void HandleCreateAckd()                            { if( mAction == RA_Create ) { mAction = RA_Update; } }

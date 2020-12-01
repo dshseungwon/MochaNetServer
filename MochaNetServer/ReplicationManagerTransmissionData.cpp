@@ -31,6 +31,10 @@ void ReplicationManagerTransmissionData::HandleDeliveryFailure( DeliveryNotifica
         case RA_Destroy:
             HandleDestroyDeliveryFailure( networkId );
             break;
+        case RA_RPC:
+            HandleRPCDeliveryFailure( networkId );
+        case RA_MAX:
+            break;
         }
         
     }
@@ -49,6 +53,14 @@ void ReplicationManagerTransmissionData::HandleDeliverySuccess( DeliveryNotifica
         case RA_Destroy:
             HandleDestroyDeliverySuccess( rt.GetNetworkId() );
             break;
+        case RA_RPC:
+            HandleRPCDeliverySuccess( rt.GetNetworkId() );
+            break;
+                
+        case RA_Update:
+            break;
+        case RA_MAX:
+            break;
         }
     }
 }
@@ -64,6 +76,17 @@ void ReplicationManagerTransmissionData::HandleCreateDeliveryFailure( int inNetw
     {
         mReplicationManagerServer->ReplicateCreate( inNetworkId, gameObject->GetAllStateMask() );
     }
+}
+
+void ReplicationManagerTransmissionData::HandleRPCDeliveryFailure( int inNetworkId ) const
+{
+//    printf("HandleRPCDeliveryFailure\n");
+//    //does the object still exist? it might be dead, in which case we don't resend a create
+//    MochaObjectPtr gameObject = NetworkManagerServer::sInstance->GetGameObject( inNetworkId );
+//    if( gameObject )
+//    {
+//        mReplicationManagerServer->ReplicateRPC( inNetworkId, gameObject->GetAllStateMask() );
+//    }
 }
 
 void ReplicationManagerTransmissionData::HandleDestroyDeliveryFailure( int inNetworkId ) const
@@ -99,10 +122,19 @@ void ReplicationManagerTransmissionData::HandleUpdateStateDeliveryFailure( int i
 void ReplicationManagerTransmissionData::HandleCreateDeliverySuccess( int inNetworkId ) const
 {
     //we've received an ack for the create, so we can start sending as only an update
+//    printf("CREATE Delivery has successed\n");
     mReplicationManagerServer->HandleCreateAckd( inNetworkId );
 }
 
 void ReplicationManagerTransmissionData::HandleDestroyDeliverySuccess( int inNetworkId ) const
 {
     mReplicationManagerServer->RemoveFromReplication( inNetworkId );
+}
+
+void ReplicationManagerTransmissionData::HandleRPCDeliverySuccess( int inNetworkId ) const
+{
+//    printf("HandleRPCDeliverySuccess\n");
+//    MochaObjectPtr go;
+//    go = NetworkManagerServer::sInstance->GetGameObject(inNetworkId);
+//    go->SetDoesWantToDie(true);
 }

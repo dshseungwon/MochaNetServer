@@ -16,6 +16,8 @@ public:
     {
         return static_cast< float >( GetTime() );
     }
+    
+    unsigned long GetTimeSinceEpoch() const;
 
     float GetFrameStartTime() const { return mFrameStartTimef; }
 

@@ -45,6 +45,7 @@
 		E39A0BB425681A62003F80FC /* Server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0BB225681A62003F80FC /* Server.cpp */; };
 		E39A0BBC256823DC003F80FC /* FirstFantasyCharacterServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0BBA256823DC003F80FC /* FirstFantasyCharacterServer.cpp */; };
 		E39A0BC025682C85003F80FC /* MMOMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E39A0BBF25682C85003F80FC /* MMOMath.cpp */; };
+		E3C7C3BC25761BA800226676 /* ExplosionRPCServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3C7C3BA25761BA800226676 /* ExplosionRPCServer.cpp */; };
 		E3F96C2325741351000ACFF9 /* StreetlightServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E3F96C2125741351000ACFF9 /* StreetlightServer.cpp */; };
 /* End PBXBuildFile section */
 
@@ -146,6 +147,8 @@
 		E39A0BBA256823DC003F80FC /* FirstFantasyCharacterServer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = FirstFantasyCharacterServer.cpp; sourceTree = "<group>"; };
 		E39A0BBB256823DC003F80FC /* FirstFantasyCharacterServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirstFantasyCharacterServer.h; sourceTree = "<group>"; };
 		E39A0BBF25682C85003F80FC /* MMOMath.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MMOMath.cpp; sourceTree = "<group>"; };
+		E3C7C3BA25761BA800226676 /* ExplosionRPCServer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ExplosionRPCServer.cpp; sourceTree = "<group>"; };
+		E3C7C3BB25761BA800226676 /* ExplosionRPCServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExplosionRPCServer.h; sourceTree = "<group>"; };
 		E3F96C2125741351000ACFF9 /* StreetlightServer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = StreetlightServer.cpp; sourceTree = "<group>"; };
 		E3F96C2225741351000ACFF9 /* StreetlightServer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StreetlightServer.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -266,6 +269,8 @@
 				E316A29325690105000EBFFC /* ArcherCharacterServer.h */,
 				E3F96C2125741351000ACFF9 /* StreetlightServer.cpp */,
 				E3F96C2225741351000ACFF9 /* StreetlightServer.h */,
+				E3C7C3BA25761BA800226676 /* ExplosionRPCServer.cpp */,
+				E3C7C3BB25761BA800226676 /* ExplosionRPCServer.h */,
 			);
 			path = MochaNetServer;
 			sourceTree = "<group>";
@@ -347,6 +352,7 @@
 				E35F3FF0257373DD00273AA8 /* ReplicationManagerTransmissionData.cpp in Sources */,
 				E39A0B4525681392003F80FC /* main.cpp in Sources */,
 				E35F3FE32573686200273AA8 /* DeliveryNotificationManager.cpp in Sources */,
+				E3C7C3BC25761BA800226676 /* ExplosionRPCServer.cpp in Sources */,
 				E39A0B962568146D003F80FC /* MoveList.cpp in Sources */,
 				E39A0BA2256817D9003F80FC /* ClientProxy.cpp in Sources */,
 				E35F3FE9257369B000273AA8 /* InFlightPacket.cpp in Sources */,

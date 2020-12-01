@@ -37,10 +37,13 @@ public:
 private:
 
     void HandleCreateDeliveryFailure( int inNetworkId ) const;
+    void HandleRPCDeliveryFailure( int inNetworkId ) const;
     void HandleUpdateStateDeliveryFailure( int inNetworkId, uint32_t inState, DeliveryNotificationManager* inDeliveryNotificationManager ) const;
     void HandleDestroyDeliveryFailure( int inNetworkId ) const;
     void HandleCreateDeliverySuccess( int inNetworkId ) const;
     void HandleDestroyDeliverySuccess( int inNetworkId ) const;
+    void HandleRPCDeliverySuccess( int inNetworkId ) const;
+
 
     ReplicationManagerServer*    mReplicationManagerServer;
     

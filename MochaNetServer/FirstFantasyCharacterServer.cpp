@@ -6,7 +6,7 @@ const float HALF_WORLD_WIDTH = 100000.f;
 FirstFantasyCharacterServer::FirstFantasyCharacterServer() :
     mCatControlType( ESCT_Human ),
     mTimeOfNextShot( 0.f ),
-    mTimeBetweenShots( 0.2f ),
+    mTimeBetweenShots( 3.f ),
     mMaxRotationSpeed( 5.f ),
     mMaxLinearSpeed( 6000.f ),
     mVelocity( Vector3::Zero ),
@@ -24,13 +24,6 @@ FirstFantasyCharacterServer::FirstFantasyCharacterServer() :
 
 void FirstFantasyCharacterServer::ProcessInput( float inDeltaTime, const MMOInputState& inInputState )
 {
-    //process our input....
-
-    //turning...
-//    float newRotation = GetRotation() + inInputState.GetDesiredHorizontalDelta() * mMaxRotationSpeed * inDeltaTime;
-//    SetRotation( newRotation );
-
-    //moving...
     float inputForwardDelta = inInputState.GetDesiredVerticalDelta();
     mThrustDirForward = inputForwardDelta;
 
@@ -43,8 +36,6 @@ void FirstFantasyCharacterServer::ProcessInput( float inDeltaTime, const MMOInpu
 
 void FirstFantasyCharacterServer::AdjustVelocityByThrust( float inDeltaTime, const MMOInputState& inInputState )
 {
-    //just set the velocity based on the thrust direction -- no thrust will lead to 0 velocity
-    //simulating acceleration makes the client prediction a bit more complex
     Vector3 forwardVector = GetForwardVector();
     Vector3 rightVector = GetRightVector();
     
@@ -57,7 +48,6 @@ void FirstFantasyCharacterServer::AdjustVelocityByThrust( float inDeltaTime, con
 
 void FirstFantasyCharacterServer::SimulateMovement( float inDeltaTime, const MMOInputState& inInputState )
 {
-    //simulate us...
     AdjustVelocityByThrust( inDeltaTime, inInputState );
 
     SetLocation( GetLocation() + mVelocity * inDeltaTime );
@@ -194,10 +184,6 @@ uint32_t FirstFantasyCharacterServer::Write( OutputMemoryBitStream& inOutputStre
 
 }
 
-
-
-
-
 void FirstFantasyCharacterServer::HandleDying()
 {
     NetworkManagerServer::sInstance->UnregisterGameObject( this );
@@ -243,10 +229,15 @@ void FirstFantasyCharacterServer::HandleShooting()
     {
         //not exact, but okay
         mTimeOfNextShot = time + mTimeBetweenShots;
-
-        //fire!
-        //YarnPtr yarn = std::static_pointer_cast< Yarn >( GameObjectRegistry::sInstance->CreateGameObject( 'YARN' ) );
-        //yarn->InitFromShooter( this );
+        
+        // SEND RPC PACKET
+        MochaObjectPtr go;
+        go = GameObjectRegistry::sInstance->CreateGameObject( 'EXPR' );
+        
+        Vector3 InvokeLocation = GetLocation() + (GetForwardVector() * 1000);
+        go->SetLocation( InvokeLocation );
+        go->SetCreationTime(Timing::sInstance.GetTimeSinceEpoch());
+        // go->SetDoesWantToDie(true);
     }
 }
 

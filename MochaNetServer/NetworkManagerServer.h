@@ -15,8 +15,15 @@ public:
             void            CheckForDisconnects();
 
     void            RegisterGameObject( MochaObjectPtr inGameObject );
+    void            RegisterRPC( MochaObjectPtr inGameObject );
+
     inline    MochaObjectPtr    RegisterAndReturn( IMochaObject* inGameObject );
+    inline    MochaObjectPtr    RegisterRPCAndReturn( IMochaObject* inGameObject );
+
+    
             void            UnregisterGameObject( IMochaObject* inGameObject );
+            void            UnregisterRPC( IMochaObject* inGameObject );
+
             void            SetStateDirty( int inNetworkId, uint32_t inDirtyState );
 
             void            RespawnPlayers();
@@ -81,6 +88,13 @@ inline MochaObjectPtr NetworkManagerServer::RegisterAndReturn( IMochaObject* inG
 {
     MochaObjectPtr toRet( inGameObject );
     RegisterGameObject( toRet );
+    return toRet;
+}
+
+inline MochaObjectPtr NetworkManagerServer::RegisterRPCAndReturn( IMochaObject* inGameObject )
+{
+    MochaObjectPtr toRet( inGameObject );
+    RegisterRPC( toRet );
     return toRet;
 }
 

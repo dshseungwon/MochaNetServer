@@ -21,6 +21,11 @@ void ReplicationManagerServer::SetStateDirty( int inNetworkId, uint32_t inDirtyS
     mNetworkIdToReplicationCommand[ inNetworkId ].AddDirtyState( inDirtyState );
 }
 
+void ReplicationManagerServer::ReplicateRPC( int inNetworkId, uint32_t inInitialDirtyState )
+{
+    mNetworkIdToReplicationCommand[ inNetworkId ] = ReplicationCommand(true, inInitialDirtyState);
+}
+
 void ReplicationManagerServer::HandleCreateAckd( int inNetworkId )
 {
     mNetworkIdToReplicationCommand[ inNetworkId ].HandleCreateAckd();
@@ -69,6 +74,7 @@ bool ReplicationManagerServer::Write( OutputMemoryBitStream& inOutputStream, Rep
                 break;
             case RA_RPC:
                 // Do Things for RPC Requests.
+                writtenState = WriteRPCAction(inOutputStream, networkId, dirtyState);
                 break;
             case RA_MAX:
                 break;
@@ -136,4 +142,13 @@ uint32_t ReplicationManagerServer::WriteDestroyAction( OutputMemoryBitStream& in
     //don't have to do anything- action already written
 
     return inDirtyState;
+}
+
+uint32_t ReplicationManagerServer::WriteRPCAction( OutputMemoryBitStream& inOutputStream, int inNetworkId, uint32_t inDirtyState )
+{
+    //need object
+    MochaObjectPtr gameObject = NetworkManagerServer::sInstance->GetGameObject( inNetworkId );
+    //need 4 cc
+    inOutputStream.Write( gameObject->GetClassId() );
+    return gameObject->Write( inOutputStream, inDirtyState );
 }

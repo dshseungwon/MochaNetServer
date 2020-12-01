@@ -45,3 +45,16 @@ double Timing::GetTime() const
     //a little uncool to then convert into a double just to go back, but oh well.
     return static_cast< double >( ms ) / 1000;
 }
+
+unsigned long Timing::GetTimeSinceEpoch() const
+{
+//    auto time_since_epoch = system_clock::now().time_since_epoch();
+//    auto ms = duration_cast< milliseconds >(time_since_epoch).count();
+//    return static_cast< float >(ms);
+    
+    unsigned long milliseconds_since_epoch =
+        std::chrono::duration_cast<std::chrono::milliseconds>
+            (std::chrono::system_clock::now().time_since_epoch()).count();
+    
+    return milliseconds_since_epoch;
+}

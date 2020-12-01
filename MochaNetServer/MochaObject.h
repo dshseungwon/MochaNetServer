@@ -50,6 +50,9 @@ public:
 
             int            GetNetworkId()                const                { return mNetworkId; }
             void        SetNetworkId( int inNetworkId );
+    
+            unsigned long            GetCreationTime()                const                { return mCreationTime; }
+    void        SetCreationTime( unsigned long inTime ) { mCreationTime = inTime; }
 
     void        SetPlayerId( uint32_t inPlayerId )            { mPlayerId = inPlayerId; }
     uint32_t    GetPlayerId()                        const     { return mPlayerId; }
@@ -78,6 +81,8 @@ private:
     uint32_t            mPlayerId;
     
     uint32_t                                        kClassId;
+    
+    unsigned long                                            mCreationTime;
     
 protected:
     float                mTimeLocationBecameOutOfSync;
