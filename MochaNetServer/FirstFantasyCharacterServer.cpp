@@ -237,6 +237,27 @@ void FirstFantasyCharacterServer::HandleShooting()
         Vector3 InvokeLocation = GetLocation() + (GetForwardVector() * 1000);
         go->SetLocation( InvokeLocation );
         go->SetCreationTime(Timing::sInstance.GetTimeSinceEpoch());
+        
+        
+        for( auto goIt = MMOWorld::sInstance->GetGameObjects().begin(), end = MMOWorld::sInstance->GetGameObjects().end(); goIt != end; ++goIt )
+        {
+            IMochaObject* target = goIt->get();
+            if( target->GetClassId() == 'SLIT' && !target->DoesWantToDie() )
+            {
+                //simple collision test for spheres- are the radii summed less than the distance?
+                Vector3 targetLocation = target->GetLocation();
+
+                Vector3 delta = targetLocation - InvokeLocation;
+                float distSq = delta.LengthSq2D();
+                
+//                printf("distSq: %f\n", distSq);
+                if (distSq < 20000)
+                {
+                    target->SetDoesWantToDie( true );
+                    printf("Destroy %d", target->GetClassId());
+                }
+            }
+        }
         // go->SetDoesWantToDie(true);
     }
 }

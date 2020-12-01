@@ -11,6 +11,11 @@ void StreetlightServer::Update()
     
 }
 
+void StreetlightServer::HandleDying()
+{
+    NetworkManagerServer::sInstance->UnregisterGameObject( this );
+}
+
 uint32_t StreetlightServer::Write( OutputMemoryBitStream& inOutputStream, uint32_t inDirtyState ) const
 {
     uint32_t written_state = 0;

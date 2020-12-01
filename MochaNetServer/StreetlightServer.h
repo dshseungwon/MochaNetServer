@@ -20,6 +20,8 @@ public:
     static MochaObjectPtr    StaticCreate() { return NetworkManagerServer::sInstance->RegisterAndReturn( new StreetlightServer() ); }
     
     virtual void Update() override;
+    virtual void HandleDying() override;
+
     
     virtual uint32_t GetClassId() const override { return kClassId; }
 

@@ -20,7 +20,7 @@ void ExplosionRPCServer::Update()
 
 void ExplosionRPCServer::HandleDying()
 {
-    NetworkManagerServer::sInstance->UnregisterRPC( this );
+    NetworkManagerServer::sInstance->UnregisterGameObject(this);
 }
 
 uint32_t ExplosionRPCServer::Write( OutputMemoryBitStream& inOutputStream, uint32_t inDirtyState ) const
