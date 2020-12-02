@@ -19,7 +19,7 @@ Server::Server()
     DatabaseManager::sInstance->ConnectToDB("127.0.0.1,5432@firstfantasy", "postgres", "LAUmac0117!");
     
     // Pass 'true' to enable multi-threading
-    InitNetworkManager(true);
+    InitNetworkManager(false);
     
     // Setup latency
     float latency = 0.0f;
@@ -84,7 +84,7 @@ void Server::SetupWorld()
 //    DatabaseManager::sInstance->CreateUserRecord();
 //    DatabaseManager::sInstance->PutRandomArchersToDatabse(50);
     
-    DatabaseManager::sInstance->CreateArchersFromDB();
+//    DatabaseManager::sInstance->CreateArchersFromDB();
 
 
 }

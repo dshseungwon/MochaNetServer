@@ -6,8 +6,17 @@ NetworkManagerServer::NetworkManagerServer() :
     mNewPlayerId( 1 ),
     mNewNetworkId( 1 ),
     mTimeBetweenStatePackets( 0.033f ),
-    mClientDisconnectTimeout( 5.f )
+    mClientDisconnectTimeout( 5.f ),
+    mTotalProcessedPackets(0),
+    mTimeOfLastPPSLog(0.f),
+    mFirstPacketProcessTime(0.f)
 {
+    string path = string("/Users/seungwon/Desktop/LOG/Thread-1/29/server.txt");
+    fout.open(path);
+}
+
+namespace {
+    const float kTimeBetweenLog = 3.f;
 }
 
 bool NetworkManagerServer::StaticInit( uint16_t inPort, bool useMultiThreading )
@@ -76,7 +85,15 @@ void NetworkManagerServer::ProcessPacket( char* packetMem, InputMemoryBitStream&
             ProcessPacket( ( *clientIt ).second, inInputStream );
         }
     }
-    
+
+    {
+        updatable_lock lock(mtx);
+        if (mTotalProcessedPackets == 0)
+        {
+            mFirstPacketProcessTime = Timing::sInstance.GetTimef();
+        }
+        ++mTotalProcessedPackets;
+    }
     // mPacketVector.erase(mPacketVector.begin());
 
     // LOG("Erase: %p", packetMem);
@@ -373,6 +390,19 @@ void NetworkManagerServer::SendStatePacketToClient( ClientProxyPtr inClientProxy
         isFragmented = inClientProxy->GetReplicationManagerServer().Write( statePacket, rmtd, fragPacket );
         
         ifp->SetTransmissionData('RPLM', TransmissionDataPtr(rmtd));
+        
+        ++mTotalProcessedPackets;
+        
+        float CurrentTime = Timing::sInstance.GetTimef();
+        float TimeSinceFirstPacketProcess = CurrentTime - mFirstPacketProcessTime;
+        
+        if( TimeSinceFirstPacketProcess > mTimeOfLastPPSLog + kTimeBetweenLog )
+        {
+            float PacketsPerSecond =  static_cast<float>(mTotalProcessedPackets)/TimeSinceFirstPacketProcess;
+            fout << "[" << TimeSinceFirstPacketProcess << "]" << " Packets per second: " << PacketsPerSecond << std::endl;
+            mTimeOfLastPPSLog = TimeSinceFirstPacketProcess;
+        }
+        
     }
     
     // LOG("Bytelength of statePacket: %d",statePacket.GetByteLength());

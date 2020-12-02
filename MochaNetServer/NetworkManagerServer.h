@@ -1,5 +1,7 @@
 #pragma once
 
+#include <fstream>
+
 class NetworkManagerServer : public NetworkManager
 {
 public:
@@ -79,7 +81,14 @@ private:
     float            mTimeBetweenStatePackets;
     float            mClientDisconnectTimeout;
     
+    unsigned int     mTotalProcessedPackets;
+    float            mTimeOfLastPPSLog;
+    
+    float            mFirstPacketProcessTime;
+    
     mutex_type mtx;
+    
+    std::ofstream   fout;
     
 };
 

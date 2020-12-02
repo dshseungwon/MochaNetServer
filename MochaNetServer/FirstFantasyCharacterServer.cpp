@@ -210,6 +210,7 @@ void FirstFantasyCharacterServer::Update()
         }
 
         moveList.Clear();
+        
     }
 
     HandleShooting();
