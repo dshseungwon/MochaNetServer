@@ -52,46 +52,6 @@ void FirstFantasyCharacterServer::SimulateMovement( float inDeltaTime, const MMO
 
     SetLocation( GetLocation() + mVelocity * inDeltaTime );
 
-    //ProcessCollisions();
-}
-
-void FirstFantasyCharacterServer::ProcessCollisionsWithScreenWalls()
-{
-    Vector3 location = GetLocation();
-    float x = location.mX;
-    float y = location.mY;
-
-    float vx = mVelocity.mX;
-    float vy = mVelocity.mY;
-
-    float radius = GetCollisionRadius();
-
-    //if the cat collides against a wall, the quick solution is to push it off
-    if( ( y + radius ) >= HALF_WORLD_HEIGHT && vy > 0 )
-    {
-        mVelocity.mY = -vy * mWallRestitution;
-        location.mY = HALF_WORLD_HEIGHT - radius;
-        SetLocation( location );
-    }
-    else if( y <= ( -HALF_WORLD_HEIGHT - radius ) && vy < 0 )
-    {
-        mVelocity.mY = -vy * mWallRestitution;
-        location.mY = -HALF_WORLD_HEIGHT - radius;
-        SetLocation( location );
-    }
-
-    if( ( x + radius ) >= HALF_WORLD_WIDTH && vx > 0 )
-    {
-        mVelocity.mX = -vx * mWallRestitution;
-        location.mX = HALF_WORLD_WIDTH - radius;
-        SetLocation( location );
-    }
-    else if(  x <= ( -HALF_WORLD_WIDTH - radius ) && vx < 0 )
-    {
-        mVelocity.mX = -vx * mWallRestitution;
-        location.mX = -HALF_WORLD_WIDTH - radius;
-        SetLocation( location );
-    }
 }
 
 uint32_t FirstFantasyCharacterServer::Write( OutputMemoryBitStream& inOutputStream, uint32_t inDirtyState ) const
@@ -243,7 +203,7 @@ void FirstFantasyCharacterServer::HandleShooting()
         for( auto goIt = MMOWorld::sInstance->GetGameObjects().begin(), end = MMOWorld::sInstance->GetGameObjects().end(); goIt != end; ++goIt )
         {
             IMochaObject* target = goIt->get();
-            if( target->GetClassId() == 'SLIT' && !target->DoesWantToDie() )
+            if( target->GetClassId() == 'ARCH' && !target->DoesWantToDie() )
             {
                 //simple collision test for spheres- are the radii summed less than the distance?
                 Vector3 targetLocation = target->GetLocation();

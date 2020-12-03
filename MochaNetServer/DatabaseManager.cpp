@@ -169,9 +169,6 @@ DBAuthResult DatabaseManager::GetClientNameBySignUpDB(std::string id, std::strin
     {
         if (mConnection.isConnected())
         {
-//            newConnection.Connect(_TSA(mDBAddress.c_str()), _TSA(mDBId.c_str()), _TSA(mDBPasswd.c_str()), SA_PostgreSQL_Client);
-//            printf("%s","(SIGN UP) Connected to the database.\n");
-        
             SACommand select(&mConnection, _TSA("SELECT COUNT(*) FROM users WHERE identification = :1"));
             select << _TSA(id.c_str());
             select.Execute();
@@ -243,8 +240,8 @@ void DatabaseManager::CreateFieldObjectRecord()
 // Single Thread.
 void DatabaseManager::PutRandomArchersToDatabse( int inNumber )
 {
-    Vector3 minPos( -3000.f, -3000.f, 0.f );
-    Vector3 maxPos( 3000.f, 3000.f, 0.f );
+    Vector3 minPos( -6000.f, -6000.f, 0.f );
+    Vector3 maxPos( 6000.f, 6000.f, 0.f );
     
     SAConnection con;
            
@@ -298,7 +295,7 @@ void DatabaseManager::CreateArchersFromDB()
                 archerLocation.Set(loc_x, loc_y, loc_z);
                 MochaObjectPtr go;
                 
-                go = GameObjectRegistry::sInstance->CreateGameObject( 'SLIT' );
+                go = GameObjectRegistry::sInstance->CreateGameObject( 'ARCH' );
                 go->SetLocation( archerLocation );
             }
         }

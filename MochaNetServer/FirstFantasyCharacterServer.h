@@ -22,8 +22,7 @@ public:
     virtual uint32_t GetAllStateMask()    const override    { return ECRS_AllState; }
     void ProcessInput( float inDeltaTime, const MMOInputState& inInputState );
     void SimulateMovement( float inDeltaTime, const MMOInputState& inInputState );
-    void ProcessCollisions();
-    void ProcessCollisionsWithScreenWalls();
+
     void        SetPlayerId( uint32_t inPlayerId )            { mPlayerId = inPlayerId; }
     uint32_t    GetPlayerId()                        const     { return mPlayerId; }
 

@@ -102,7 +102,6 @@ void NetworkManagerServer::ProcessPacket( char* packetMem, InputMemoryBitStream&
 
 void NetworkManagerServer::ProcessClientHeartbeat(InputMemoryBitStream &inInputStream, const SocketAddress &inFromAddress)
 {
-    //read the beginning- is it a hello?
     uint32_t    packetType;
     inInputStream.Read( packetType );
     if(  packetType == kHelloCC )

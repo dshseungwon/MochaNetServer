@@ -11,6 +11,11 @@ void ArcherCharacterServer::Update()
     
 }
 
+void ArcherCharacterServer::HandleDying()
+{
+    NetworkManagerServer::sInstance->UnregisterGameObject( this );
+}
+
 uint32_t ArcherCharacterServer::Write( OutputMemoryBitStream& inOutputStream, uint32_t inDirtyState ) const
 {
     uint32_t written_state = 0;
